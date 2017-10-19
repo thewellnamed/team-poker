@@ -137,7 +137,7 @@ public class Hand implements Comparable<Hand> {
     	}
     	
     	// hands of less than 5 cards may only be X-of-a-kind
-    	// X-of-a-kind score is the value of the highest card
+    	// X-of-a-kind score is the value of the highest suit
     	else if (cards.size() < 5) {
     		validateOfAKind();
     	}
