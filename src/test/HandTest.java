@@ -67,6 +67,11 @@ public class HandTest {
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.STRAIGHT));
 		assertThat(h.getScore(), is(Hand.STRAIGHT_BASE_SCORE + h.getHighCard().getValue()));
+		
+		h = new Hand("10c 6d 8c 4h 9s");
+		assertThat(h.isValid(), is(false));
+		assertThat(h.getType(), is(HandType.INVALID));
+		assertThat(h.getScore(), is(0));
 	}
 	
 	@Test
