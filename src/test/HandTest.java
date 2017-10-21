@@ -2,16 +2,18 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.TreeSet;
 
 import static org.hamcrest.CoreMatchers.*;
 import org.junit.Test;
 
 import poker.Card;
+import poker.Deck;
 import poker.Hand;
 import poker.enums.HandType;
 import poker.enums.Rank;
-import poker.enums.Suit;
 
 public class HandTest {
 
@@ -20,12 +22,12 @@ public class HandTest {
 		Hand h = new Hand("Ac");
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.HIGH_CARD));
-		assertThat(h.getScore(), is(Hand.HIGH_CARD_BASE_SCORE + h.getHighCard().getValue()));
+		assertThat(h.getScore(), is(Hand.SCORE_HIGH_CARD | h.getHighCard().getScore()));
 		
 		h = new Hand("2d");
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.HIGH_CARD));
-		assertThat(h.getScore(), is(Hand.HIGH_CARD_BASE_SCORE + h.getHighCard().getValue()));
+		assertThat(h.getScore(), is(Hand.SCORE_HIGH_CARD | h.getHighCard().getScore()));
 	}
 	
 	@Test
@@ -33,12 +35,12 @@ public class HandTest {
 		Hand h = new Hand("AcAd");
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.PAIR));
-		assertThat(h.getScore(), is(Hand.PAIR_BASE_SCORE + h.getHighCard().getValue()));
+		assertThat(h.getScore(), is(Hand.SCORE_PAIR | h.getHighCard().getScore()));
 		
 		h = new Hand("AcKs");
 		assertThat(h.isValid(), is(false));
 		assertThat(h.getType(), is(HandType.INVALID));
-		assertThat(h.getScore(), is(0));
+		assertThat(h.getScore(), equalTo(0L));
 	}
 	
 	@Test
@@ -46,7 +48,7 @@ public class HandTest {
 		Hand h = new Hand("2s2d2c");
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.TRIPS));
-		assertThat(h.getScore(), is(Hand.TRIPS_BASE_SCORE + h.getHighCard().getRank().getValue()));
+		assertThat(h.getScore(), is(Hand.SCORE_TRIPS | h.getHighCard().getScore()));
 	}
 	
 	@Test
@@ -54,12 +56,12 @@ public class HandTest {
 		Hand h = new Hand("Jd Js Jc Jh");
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.QUADS));
-		assertThat(h.getScore(), is(Hand.QUADS_BASE_SCORE + (h.getHighCard().getRank().getValue() * Hand.QUADS_RANK_MULTIPLIER)));
+		assertThat(h.getScore(), is(Hand.SCORE_QUADS | (h.getHighCard().getRank().getScore() << 17)));
 		
 		h = new Hand("Td Ts Tc Ac");
 		assertThat(h.isValid(), is(false));
 		assertThat(h.getType(), is(HandType.INVALID));
-		assertThat(h.getScore(), is(0));
+		assertThat(h.getScore(), equalTo(0L));
 	}
 	
 	@Test
@@ -67,12 +69,12 @@ public class HandTest {
 		Hand h =  new Hand("5c 8d 6s 7s 9h");
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.STRAIGHT));
-		assertThat(h.getScore(), is(Hand.STRAIGHT_BASE_SCORE + h.getHighCard().getValue()));
+		assertThat(h.getScore(), is(Hand.SCORE_STRAIGHT | h.getHighCard().getScore()));
 		
 		h = new Hand("10c 6d 8c 4h 9s");
 		assertThat(h.isValid(), is(false));
 		assertThat(h.getType(), is(HandType.INVALID));
-		assertThat(h.getScore(), is(0));
+		assertThat(h.getScore(), equalTo(0L));
 	}
 	
 	@Test
@@ -80,7 +82,7 @@ public class HandTest {
 		Hand h =  new Hand("Td 6d 4d 2d Jd");
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.FLUSH));
-		assertThat(h.getScore(), is(Hand.FLUSH_BASE_SCORE + h.getHighCard().getValue()));
+		assertThat(h.getScore(), is(Hand.SCORE_FLUSH | h.getHighCard().getScore()));
 	}
 	
 	@Test
@@ -88,7 +90,7 @@ public class HandTest {
 		Hand h = new Hand("Ad As Ac Kd Kh");
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.FULL_HOUSE));
-		assertThat(h.getScore(), is(Hand.FULL_HOUSE_BASE_SCORE + (Rank.ACE.getValue() * 13) + Rank.KING.getValue()));
+		assertThat(h.getScore(), is(Hand.SCORE_FULL_HOUSE | (Rank.ACE.getScore() << 17) | Rank.KING.getScore()));
 	}
 	
 	@Test
@@ -96,7 +98,7 @@ public class HandTest {
 		Hand h = new Hand("Jd Js Jc Jh Td");
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.QUADS_WITH_KICKER));
-		assertThat(h.getScore(), is(Hand.QUADS_BASE_SCORE + (Rank.JACK.getValue() * Hand.QUADS_RANK_MULTIPLIER) + (new Card("Td").getValue())));
+		assertThat(h.getScore(), is(Hand.SCORE_QUADS | (Rank.JACK.getScore() << 17) | (Card.ofValue("Td").getScore())));
 	}
 	
 	@Test
@@ -104,7 +106,7 @@ public class HandTest {
 		Hand h =  new Hand("7s 8s 4s 6s 5s");
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.STRAIGHT_FLUSH));
-		assertThat(h.getScore(), is(Hand.STRAIGHT_FLUSH_BASE_SCORE + h.getHighCard().getValue()));
+		assertThat(h.getScore(), is(Hand.SCORE_STRAIGHT_FLUSH + h.getHighCard().getScore()));
 	}
 	
 	@Test
@@ -179,18 +181,22 @@ public class HandTest {
 		assertThat(hands.toString(), equalTo("[2c, 2s, 3h3c, 6s6d6c, 8h7h6d5s4c, Ks9s7s4s2s, 4s4c2s2d2c, As5s5h5d5c, JsJhJdJc, 7s6s5s4s3s]"));
 	}
 	
-    // 3.843s
 	@Test
 	public void testSpeed() {
 		TreeSet<Card> test = new TreeSet<Card>();
-		test.add(new Card(Rank.TWO, Suit.SPADES));
-		test.add(new Card(Rank.ACE, Suit.SPADES));
-		test.add(new Card(Rank.FOUR, Suit.SPADES));
-		test.add(new Card(Rank.NINE, Suit.SPADES));
-		test.add(new Card(Rank.TEN, Suit.CLUBS));
-		
+		Deck deck = new Deck();
+		ArrayList<Card> cards = deck.getCards();
 		Hand h;
-		for (int i = 0; i < 10000000; i++) {
+		Random rand = new Random(System.currentTimeMillis()); 
+		
+		for (int i = 0; i < 10000000; i++) { // 10 million times
+			int cardCount = rand.nextInt(5) + 1;
+			test.clear();
+			
+			for (int j = 0; j < cardCount; j++) {
+				test.add(cards.get(rand.nextInt(52)));
+			}
+			
 			h = new Hand(test);
 		}
 	}	

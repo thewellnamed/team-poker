@@ -14,6 +14,7 @@ public class CardTest {
 	public void testFromString() {
 		Card c = new Card("5s");
 		assertThat(c.toString(), is("5s"));
+		assertThat(c.getScore(), equalTo(Rank.FIVE.getScore() | Suit.SPADES.getScore()));
 		
 		// case insensitive
 		c = new Card("AH");

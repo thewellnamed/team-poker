@@ -1,8 +1,8 @@
 package poker;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
-import poker.enums.*;
 
 /**
  * Deck
@@ -17,13 +17,24 @@ public class Deck {
 	 * Construct
 	 */
 	public Deck() {
-		for (int rank = 1; rank < 14; rank++) {
-			for (int suit = 1; suit < 5; suit++) {
-				deck.add(new Card(Rank.fromValue(rank), Suit.fromValue(suit)));
-			}
-		}
-
+		deck.addAll(Card.getAllCards());
 		top = 0;
+	}
+	
+	/**
+	 * Get size
+	 * @return int
+	 */
+	public int size() {
+		return deck.size();
+	}
+	
+	/** 
+	 * Get all cards
+	 * @return ArrayList<Card>
+	 */
+	public ArrayList<Card> getCards() {
+		return deck;
 	}
 
 	/**
@@ -38,9 +49,7 @@ public class Deck {
 			int pos2 = rand.nextInt(52);
 
 			// swap
-			Card tmp = deck.get(pos1);
-			deck.set(pos1, deck.get(pos2));
-			deck.set(pos2, tmp);
+			Collections.swap(deck, pos1, pos2);
 		}
 	}
 

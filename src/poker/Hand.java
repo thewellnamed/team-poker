@@ -17,26 +17,23 @@ import poker.enums.Suit;
  */
 public class Hand implements Comparable<Hand> {
 	private TreeSet<Card> cards;
-	private int score;
+	private long score;
 	private HandType type;
 	
 	private static final int MAX_HAND_SIZE = 5;
 	
 	// scoring stratification
-	public static final int HIGH_CARD_BASE_SCORE = 100;
-	public static final int PAIR_BASE_SCORE = 200;
-	public static final int TRIPS_BASE_SCORE = 300;
-	public static final int STRAIGHT_BASE_SCORE = 400;
-	public static final int FLUSH_BASE_SCORE = 500;
-	public static final int FULL_HOUSE_BASE_SCORE = 600;
-	public static final int QUADS_BASE_SCORE = 1000;
-	public static final int STRAIGHT_FLUSH_BASE_SCORE = 2000;
+	public static final long SCORE_HIGH_CARD 		= 0x1L << 35;
+	public static final long SCORE_PAIR				= 0x1L << 36;
+	public static final long SCORE_TRIPS 			= 0x1L << 37;
+	public static final long SCORE_STRAIGHT 		= 0x1L << 38;
+	public static final long SCORE_FLUSH 			= 0x1L << 39;
+	public static final long SCORE_FULL_HOUSE 		= 0x1L << 40;
+	public static final long SCORE_QUADS 			= 0x1L << 41;
+	public static final long SCORE_STRAIGHT_FLUSH 	= 0x1L << 42;
 	
-	public static final int QUADS_RANK_MULTIPLIER = 56; // 13 * 4 + 4. Allows for kicker values
-												  		// used for quads and quads with kicker
-	
-	private static final List<Integer> scoreMap = 
-			Arrays.asList(0, HIGH_CARD_BASE_SCORE, PAIR_BASE_SCORE, TRIPS_BASE_SCORE, QUADS_BASE_SCORE);
+	private static final List<Long> scoreMap = Arrays.asList(0L, 
+			SCORE_HIGH_CARD, SCORE_PAIR, SCORE_TRIPS, SCORE_QUADS);
 	
 	private static final List<HandType> typeMap = 
 			Arrays.asList(HandType.INVALID, HandType.HIGH_CARD, HandType.PAIR, HandType.TRIPS, HandType.QUADS);
@@ -75,7 +72,7 @@ public class Hand implements Comparable<Hand> {
     /**
      * Get relative hand rank within type
      */
-    public int getScore() {
+    public long getScore() {
     	return score;
     }
     
@@ -100,7 +97,8 @@ public class Hand implements Comparable<Hand> {
      */
 	@Override
 	public int compareTo(Hand o) {
-		return score - o.getScore();
+		long ret = score - o.getScore();
+		return (ret < 0) ? -1 : (ret == 0 ? 0 : 1);
 	}
 	
 	/**
@@ -131,14 +129,16 @@ public class Hand implements Comparable<Hand> {
     	type = HandType.INVALID;
     	score = 0;
     	
+    	int handSize = cards.size();
+    	    	
     	// may only play 1 to 5 cards
-    	if (cards.size() < 1 || cards.size() > MAX_HAND_SIZE) {
+    	if (handSize < 1 || handSize > MAX_HAND_SIZE) {
     		return;
     	}
-    	
+
     	// hands of less than 5 cards may only be X-of-a-kind
     	// X-of-a-kind score is the value of the highest suit
-    	else if (cards.size() < 5) {
+    	if (handSize < 5) {
     		validateOfAKind();
     	}
     	
@@ -148,12 +148,29 @@ public class Hand implements Comparable<Hand> {
     	//    - flush
     	//    - full house
     	else {
-    		Map<Rank, List<Card>> ranks = cards.stream().collect(Collectors.groupingBy(Card::getRank));
-    		List<Suit> suits = cards.stream().map(c -> c.getSuit()).distinct().collect(Collectors.toList());
-    		
+        	long ranksAndSuits = 0L;
+        	int r1 = 0, r2 = 0;
+        	Rank r = null;
+        	
+        	for (Card c : cards) {
+        		ranksAndSuits |= c.getScore();
+        		
+        		if (r == null) {
+        			r = c.getRank();
+        			r1++;
+        		} else if (c.getRank() == r) {
+        			++r1;
+        		} else {
+        			++r2;
+        		}
+        	}
+        	
+        	long ranks = ranksAndSuits & 0xFFFF0;
+        	long suits = ranksAndSuits & 0xF;
+        	
     		// full house or quads with kicker
-    		if (ranks.size() == 2) {
-    			validateFullHouseOrQuads(ranks, suits);
+    		if (Long.bitCount(ranks) == 2) {
+    			validateFullHouseOrQuads(ranks, suits, r1, r2);
     		}
     		
     		else {
@@ -166,16 +183,17 @@ public class Hand implements Comparable<Hand> {
      * Set validity and score for high card, pair, trips, quads (no kicker)
      */
     private void validateOfAKind() {
-    	int sz = cards.size();
-		if (cards.first().getRank() == cards.last().getRank()) {
+    	Card first = cards.first();
+    	Card last = cards.last();
+    	
+		if (first.getRank() == last.getRank()) {
+	    	int sz = cards.size();
 			type = typeMap.get(sz);
 			
-			if (sz < 3) {
-				score = scoreMap.get(sz) + cards.first().getValue();
-			} else if (sz == 3) {
-				score = scoreMap.get(sz) + cards.first().getRank().getValue();
+			if (sz < 4) {
+				score = scoreMap.get(sz) | first.getScore();
 			} else {
-				score = scoreMap.get(cards.size()) + (cards.first().getRank().getValue() * QUADS_RANK_MULTIPLIER);
+				score = scoreMap.get(sz) | (first.getRank().getScore() << 17);
 			}
 		}
     }
@@ -183,64 +201,62 @@ public class Hand implements Comparable<Hand> {
     /**
      * Set validity and score for full houses and quads with kicker
      */
-    private void validateFullHouseOrQuads(Map<Rank, List<Card>> ranks, List<Suit> suits) {
-		Iterator<Rank> iter = ranks.keySet().iterator();
-		Rank r2, r1 = iter.next();
-		List<Card> cardsForRank = ranks.get(r1);
-		int rankSize = cardsForRank.size();
-		
-		if (rankSize == 4 || rankSize == 1) {
+    private void validateFullHouseOrQuads(long ranks, long suits, int r1, int r2) {
+    	Card main, kicker;
+    	
+		if (r1 == 4 || r1 == 1) {
 			type = HandType.QUADS_WITH_KICKER;
 			
-			if (rankSize == 1) {
-				r2 = r1;
-				r1 = iter.next();
+			if (r1 == 4) {
+				main = cards.first();
+				kicker = cards.last();
 			} else {
-				r2 = iter.next();
+				main = cards.last();
+				kicker = cards.first();
 			}
 			
-			Card kicker = ranks.get(r2).get(0);
-			score = QUADS_BASE_SCORE + (r1.getValue() * QUADS_RANK_MULTIPLIER) + kicker.getValue();					
+			score = SCORE_QUADS | (main.getRank().getScore() << 17) | kicker.getScore();					
 		} else {
 			type = HandType.FULL_HOUSE;			
 			
-			if (rankSize == 2) {
-				r2 = r1; r1 = iter.next(); 
+			if (r1 == 3) {
+				main = cards.first();
+				kicker = cards.last();
 			} else {
-				r2 = iter.next();
+				main = cards.last();
+				kicker = cards.first();
 			}
-			
-			score = FULL_HOUSE_BASE_SCORE + (r1.getValue() * 13) + r2.getValue();
+
+			score = SCORE_FULL_HOUSE | (main.getRank().getScore() << 17) | kicker.getRank().getScore();
 		}
     }
     
     /**
      * Validate for straight or flush or straight flush
      */
-    private void validateStraightsAndFlushes(Map<Rank, List<Card>> ranks, List<Suit> suits) {
+    private void validateStraightsAndFlushes(long ranks, long suits) {
 		// straight
-		if (ranks.size() == 5) {
-			TreeSet<Rank> r = new TreeSet<Rank>(ranks.keySet());
-			if (r.last().getValue() - r.first().getValue() == 4) {
+		if (Long.bitCount(ranks) == 5) {
+			if ((cards.first().getRank().getScore() >> 4) == cards.last().getRank().getScore()) {
 				type = HandType.STRAIGHT;
-				score = STRAIGHT_BASE_SCORE + getHighCard().getValue();
+				score = SCORE_STRAIGHT | getHighCard().getScore();
 			}
 		}
 		
 		// flush or straight flush
-		if (suits.size() == 1) {
-			int flushValue = getHighCard().getValue();
-			int baseScore;
+		if (Long.bitCount(suits) == 1) {
+			long flushValue = getHighCard().getScore();
+			long baseScore;
 			
 			if (type == HandType.STRAIGHT) {
 				type = HandType.STRAIGHT_FLUSH;
-				baseScore = STRAIGHT_FLUSH_BASE_SCORE;
+				baseScore = SCORE_STRAIGHT_FLUSH;
 			} else {
 				type = HandType.FLUSH;
-				baseScore = FLUSH_BASE_SCORE;
+				baseScore = SCORE_FLUSH;
 			}
 			
-			score = baseScore + flushValue;
+			score = baseScore | flushValue;
 		}
     }
 }

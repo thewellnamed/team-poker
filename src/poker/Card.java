@@ -1,5 +1,7 @@
 package poker;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Objects;
 
 import poker.enums.*;
@@ -8,7 +10,7 @@ public class Card implements Comparable<Card> {
 		
 	private Rank rank;
 	private Suit suit;
-	private int value;
+	private long score;
 	   
 	/**
      * Construct from rank and suit
@@ -16,14 +18,14 @@ public class Card implements Comparable<Card> {
 	public Card(Rank r, Suit s) {
 		rank = r;
 		suit = s;
-		value = (rank.getValue() * 4) + suit.getValue();
+		score = rank.getScore() | suit.getScore();
 	}
 	
 	/**
 	 * Construct from string
 	 */
 	public Card(String c) {
-		this(Rank.fromFormatString(c.substring(0, 1)), Suit.fromFormatString(c.substring(1, 2)));
+		this(Rank.ofValue(c.substring(0, 1)), Suit.ofValue(c.substring(1, 2)));
 	}
 	 
 	/**
@@ -43,8 +45,8 @@ public class Card implements Comparable<Card> {
 	/**
 	 * Get relative card value
 	 */
-	public int getValue() {
-		return value;
+	public long getScore() {
+		return score;
 	}
 	   
 	/**
@@ -82,10 +84,39 @@ public class Card implements Comparable<Card> {
 	 */
 	@Override
 	public int compareTo(Card o) {
-		if (rank.getValue() == o.getRank().getValue()) {
-			return o.getSuit().getValue() - suit.getValue();
+		if (rank.getScore() == o.getRank().getScore()) {
+			return (int)(o.getSuit().getScore() - suit.getScore());
 		}
 			
-		return o.getRank().getValue() - rank.getValue();
+		return (int)(o.getRank().getScore() - rank.getScore());
+	}
+	
+	/**
+	 * Factory methods
+	 * Dictionary of cards to avoid overhead
+	 */
+	
+	public static Collection<Card> getAllCards() {
+		return cards.values();
+	}
+	
+	public static Card ofValue(String cardStr) {
+		Card c = cards.get(cardStr);
+		
+		if (c == null) {
+			return new Card(cardStr);
+		}
+		
+		return c;
+	}
+	
+	private static HashMap<String, Card> cards = new HashMap<String, Card>();
+	static {
+		for (int rank = 1; rank <= Rank.values().length; rank++) {
+			for (int suit = 1; suit <= Suit.values().length; suit++) {
+				Card c = new Card(Rank.ofValue(rank), Suit.ofValue(suit));
+				cards.put(c.toString(), c);
+			}
+		}
 	}
 }

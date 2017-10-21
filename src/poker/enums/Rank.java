@@ -8,23 +8,24 @@ import java.util.HashMap;
  */
 public enum Rank {
 	// label, value
-	TWO		("2", 1),
-	THREE	("3", 2),
-	FOUR	("4", 3),
-	FIVE	("5", 4),
-	SIX		("6", 5),
-	SEVEN	("7", 6),
-	EIGHT	("8", 7),
-	NINE	("9", 8),
-	TEN		("T", 9),
-	JACK	("J", 10),
-	QUEEN	("Q", 11),
-	KING	("K", 12),
-	ACE		("A", 13);
+	TWO		("2", 1, 0x10),
+	THREE	("3", 2, 0x20),
+	FOUR	("4", 3, 0x40),
+	FIVE	("5", 4, 0x80),
+	SIX		("6", 5, 0x100),
+	SEVEN	("7", 6, 0x200),
+	EIGHT	("8", 7, 0x400),
+	NINE	("9", 8, 0x800),
+	TEN		("T", 9, 0x1000),
+	JACK	("J", 10, 0x2000),
+	QUEEN	("Q", 11, 0x4000),
+	KING	("K", 12, 0x8000),
+	ACE		("A", 13, 0x10000);
 	
 	// ------------
 	
-	private int value;
+	private int rankId;
+	private long scoreValue;
 	private String label;
 	
 	/**
@@ -32,17 +33,25 @@ public enum Rank {
 	 * @param lbl Used for string formatting
 	 * @param val Relative value
 	 */
-	private Rank(String lbl, int val) {
+	private Rank(String lbl, int id, long score) {
 		label = lbl;
-		value = val;
+		rankId = id;
+		scoreValue = score;
 	}
 	
 	/**
-	 * Get value
-	 * @return int
+	 * Get ID
 	 */
-	public int getValue() {
-		return value;
+	public int getId() {
+		return rankId;
+	}
+	
+	/**
+	 * Get score value
+	 * @return long
+	 */
+	public long getScore() {
+		return scoreValue;
 	}
 	
 	/**
@@ -54,8 +63,8 @@ public enum Rank {
 	
 	// Helper methods for creating Ranks from value or string format
 	
-	public static Rank fromValue(int val) {
-		Rank r = valMap.get(val);
+	public static Rank ofValue(int id) {
+		Rank r = valMap.get(id);
 		
 		if (r == null) {
 			throw new InvalidParameterException("Requested unknown rank");
@@ -64,7 +73,7 @@ public enum Rank {
 		return r;
 	}
 	
-	public static Rank fromFormatString(String lbl) {
+	public static Rank ofValue(String lbl) {
 		Rank r = lblMap.get(lbl.toUpperCase());
 		
 		if (r == null) {
@@ -78,7 +87,7 @@ public enum Rank {
 	private static HashMap<Integer, Rank> valMap = new HashMap<Integer, Rank>();
 	static {
 		for (Rank r : Rank.values()) {
-			valMap.put(r.value, r);
+			valMap.put(r.rankId, r);
 			lblMap.put(r.label, r);
 		}
 	}

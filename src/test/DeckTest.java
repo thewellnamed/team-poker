@@ -14,19 +14,20 @@ public class DeckTest {
 	@Test
 	public void testShuffle() {
 		Deck deck = new Deck();
-		deck.shuffle();
+		assertThat(deck.size(), is(52));
 		
 		HashSet<Card> cards = new HashSet<Card>();
 		HashSet<String> labels = new HashSet<String>();
 		
 		int[] suits = { 0, 0, 0, 0, 0 }; // index 0 unused
 		int[] ranks = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		
+
+		deck.shuffle();
 		while (!deck.empty()) {
 			Card c = deck.getNextCard();
 			
-			suits[c.getSuit().getValue()]++;
-			ranks[c.getRank().getValue()]++;
+			suits[c.getSuit().getId()]++;
+			ranks[c.getRank().getId()]++;
 			
 			cards.add(c);
 			labels.add(c.toString());

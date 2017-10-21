@@ -14,7 +14,7 @@ public class Utils {
 		Matcher m = cardPattern.matcher(cardStr);
 		
 		while (m.find()) {
-			ret.add(new Card(m.group()));
+			ret.add(Card.ofValue(m.group()));
 		}
 		
 		return ret;
