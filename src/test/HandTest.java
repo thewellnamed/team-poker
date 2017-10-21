@@ -11,6 +11,7 @@ import poker.Card;
 import poker.Hand;
 import poker.enums.HandType;
 import poker.enums.Rank;
+import poker.enums.Suit;
 
 public class HandTest {
 
@@ -177,5 +178,21 @@ public class HandTest {
 		
 		assertThat(hands.toString(), equalTo("[2c, 2s, 3h3c, 6s6d6c, 8h7h6d5s4c, Ks9s7s4s2s, 4s4c2s2d2c, As5s5h5d5c, JsJhJdJc, 7s6s5s4s3s]"));
 	}
+	
+    // 3.843s
+	@Test
+	public void testSpeed() {
+		TreeSet<Card> test = new TreeSet<Card>();
+		test.add(new Card(Rank.TWO, Suit.SPADES));
+		test.add(new Card(Rank.ACE, Suit.SPADES));
+		test.add(new Card(Rank.FOUR, Suit.SPADES));
+		test.add(new Card(Rank.NINE, Suit.SPADES));
+		test.add(new Card(Rank.TEN, Suit.CLUBS));
+		
+		Hand h;
+		for (int i = 0; i < 10000000; i++) {
+			h = new Hand(test);
+		}
+	}	
 }
 

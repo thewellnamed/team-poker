@@ -8,6 +8,7 @@ public class Card implements Comparable<Card> {
 		
 	private Rank rank;
 	private Suit suit;
+	private int value;
 	   
 	/**
      * Construct from rank and suit
@@ -15,6 +16,7 @@ public class Card implements Comparable<Card> {
 	public Card(Rank r, Suit s) {
 		rank = r;
 		suit = s;
+		value = (rank.getValue() * 4) + suit.getValue();
 	}
 	
 	/**
@@ -42,7 +44,7 @@ public class Card implements Comparable<Card> {
 	 * Get relative card value
 	 */
 	public int getValue() {
-		return (rank.getValue() * 4) + suit.getValue();
+		return value;
 	}
 	   
 	/**
