@@ -8,19 +8,19 @@ import java.util.HashMap;
  */
 public enum Rank {
 	// label, value
-	TWO		("2", 1, 0x10),
-	THREE	("3", 2, 0x20),
-	FOUR	("4", 3, 0x40),
-	FIVE	("5", 4, 0x80),
-	SIX		("6", 5, 0x100),
-	SEVEN	("7", 6, 0x200),
-	EIGHT	("8", 7, 0x400),
-	NINE	("9", 8, 0x800),
-	TEN		("T", 9, 0x1000),
-	JACK	("J", 10, 0x2000),
-	QUEEN	("Q", 11, 0x4000),
-	KING	("K", 12, 0x8000),
-	ACE		("A", 13, 0x10000);
+	TWO		("2", 1, 1L << 4),
+	THREE	("3", 2, 1L << 5),
+	FOUR	("4", 3, 1L << 6),
+	FIVE	("5", 4, 1L << 7),
+	SIX		("6", 5, 1L << 8),
+	SEVEN	("7", 6, 1L << 9),
+	EIGHT	("8", 7, 1L << 10),
+	NINE	("9", 8, 1L << 11),
+	TEN		("T", 9, 1L << 12),
+	JACK	("J", 10, 1L << 13),
+	QUEEN	("Q", 11, 1L << 14),
+	KING	("K", 12, 1L << 15),
+	ACE		("A", 13, 1L << 16);
 	
 	// ------------
 	

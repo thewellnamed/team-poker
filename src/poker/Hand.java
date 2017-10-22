@@ -137,7 +137,7 @@ public class Hand implements Comparable<Hand> {
         		
         		if (r == null) {
         			r = c.getRank();
-        			r1++;
+        			++r1;
         		} else if (c.getRank() == r) {
         			++r1;
         		} else {

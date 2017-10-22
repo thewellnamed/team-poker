@@ -7,10 +7,10 @@ import java.util.HashMap;
  * Card Suit
  */
 public enum Suit {
-	CLUBS		("c", 1, 0x1),
-	DIAMONDS	("d", 2, 0x2),
-	HEARTS		("h", 3, 0x4),
-	SPADES		("s", 4, 0x8);
+	CLUBS		("c", 1, 1L),
+	DIAMONDS	("d", 2, 1L << 1),
+	HEARTS		("h", 3, 1L << 2),
+	SPADES		("s", 4, 1L << 3);
 	
 	// ------------
 	

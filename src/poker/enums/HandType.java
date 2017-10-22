@@ -9,15 +9,15 @@ import java.util.HashMap;
 public enum HandType {
 						// number of cards, base score
 	INVALID				(0, 0L),
-	HIGH_CARD			(1, 0x1L << 35),
-	PAIR				(2, 0x1L << 36),
-	TRIPS				(3, 0x1L << 37),
-	STRAIGHT			(5, 0x1L << 38),
-	FLUSH				(5, 0x1L << 39),
-	FULL_HOUSE			(5, 0x1L << 40),
-	QUADS				(4, 0x1L << 41),
-	QUADS_WITH_KICKER   (5, 0x1L << 41), // same as quads 
-	STRAIGHT_FLUSH		(5, 0x1L << 42);	
+	HIGH_CARD			(1, 1L << 34),
+	PAIR				(2, 1L << 35),
+	TRIPS				(3, 1L << 36),
+	STRAIGHT			(5, 1L << 37),
+	FLUSH				(5, 1L << 38),
+	FULL_HOUSE			(5, 1L << 39),
+	QUADS				(4, 1L << 40),
+	QUADS_WITH_KICKER   (5, 1L << 40), // same as quads 
+	STRAIGHT_FLUSH		(5, 1L << 41);	
 	
 	private int numCards;
 	private long score;
