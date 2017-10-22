@@ -22,12 +22,12 @@ public class HandTest {
 		Hand h = new Hand("Ac");
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.HIGH_CARD));
-		assertThat(h.getScore(), is(Hand.SCORE_HIGH_CARD | h.getHighCard().getScore()));
+		assertThat(h.getScore(), is(HandType.HIGH_CARD.getScore() | h.getHighCard().getScore()));
 		
 		h = new Hand("2d");
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.HIGH_CARD));
-		assertThat(h.getScore(), is(Hand.SCORE_HIGH_CARD | h.getHighCard().getScore()));
+		assertThat(h.getScore(), is(HandType.HIGH_CARD.getScore() | h.getHighCard().getScore()));
 	}
 	
 	@Test
@@ -35,12 +35,12 @@ public class HandTest {
 		Hand h = new Hand("AcAd");
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.PAIR));
-		assertThat(h.getScore(), is(Hand.SCORE_PAIR | h.getHighCard().getScore()));
+		assertThat(h.getScore(), is(HandType.PAIR.getScore() | h.getHighCard().getScore()));
 		
 		h = new Hand("AcKs");
 		assertThat(h.isValid(), is(false));
 		assertThat(h.getType(), is(HandType.INVALID));
-		assertThat(h.getScore(), equalTo(0L));
+		assertThat(h.getScore(), equalTo(HandType.INVALID.getScore()));
 	}
 	
 	@Test
@@ -48,7 +48,7 @@ public class HandTest {
 		Hand h = new Hand("2s2d2c");
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.TRIPS));
-		assertThat(h.getScore(), is(Hand.SCORE_TRIPS | h.getHighCard().getScore()));
+		assertThat(h.getScore(), is(HandType.TRIPS.getScore() | h.getHighCard().getScore()));
 	}
 	
 	@Test
@@ -56,12 +56,12 @@ public class HandTest {
 		Hand h = new Hand("Jd Js Jc Jh");
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.QUADS));
-		assertThat(h.getScore(), is(Hand.SCORE_QUADS | (h.getHighCard().getRank().getScore() << 17)));
+		assertThat(h.getScore(), is(HandType.QUADS.getScore() | (h.getHighCard().getRank().getScore() << 17)));
 		
 		h = new Hand("Td Ts Tc Ac");
 		assertThat(h.isValid(), is(false));
 		assertThat(h.getType(), is(HandType.INVALID));
-		assertThat(h.getScore(), equalTo(0L));
+		assertThat(h.getScore(), equalTo(HandType.INVALID.getScore()));
 	}
 	
 	@Test
@@ -69,7 +69,7 @@ public class HandTest {
 		Hand h =  new Hand("5c 8d 6s 7s 9h");
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.STRAIGHT));
-		assertThat(h.getScore(), is(Hand.SCORE_STRAIGHT | h.getHighCard().getScore()));
+		assertThat(h.getScore(), is(HandType.STRAIGHT.getScore() | h.getHighCard().getScore()));
 		
 		h = new Hand("10c 6d 8c 4h 9s");
 		assertThat(h.isValid(), is(false));
@@ -82,7 +82,7 @@ public class HandTest {
 		Hand h =  new Hand("Td 6d 4d 2d Jd");
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.FLUSH));
-		assertThat(h.getScore(), is(Hand.SCORE_FLUSH | h.getHighCard().getScore()));
+		assertThat(h.getScore(), is(HandType.FLUSH.getScore() | h.getHighCard().getScore()));
 	}
 	
 	@Test
@@ -90,7 +90,7 @@ public class HandTest {
 		Hand h = new Hand("Ad As Ac Kd Kh");
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.FULL_HOUSE));
-		assertThat(h.getScore(), is(Hand.SCORE_FULL_HOUSE | (Rank.ACE.getScore() << 17) | Rank.KING.getScore()));
+		assertThat(h.getScore(), is(HandType.FULL_HOUSE.getScore() | (Rank.ACE.getScore() << 17) | Rank.KING.getScore()));
 	}
 	
 	@Test
@@ -98,7 +98,7 @@ public class HandTest {
 		Hand h = new Hand("Jd Js Jc Jh Td");
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.QUADS_WITH_KICKER));
-		assertThat(h.getScore(), is(Hand.SCORE_QUADS | (Rank.JACK.getScore() << 17) | (Card.ofValue("Td").getScore())));
+		assertThat(h.getScore(), is(HandType.QUADS_WITH_KICKER.getScore() | (Rank.JACK.getScore() << 17) | (Card.ofValue("Td").getScore())));
 	}
 	
 	@Test
@@ -106,7 +106,7 @@ public class HandTest {
 		Hand h =  new Hand("7s 8s 4s 6s 5s");
 		assertThat(h.isValid(), is(true));
 		assertThat(h.getType(), is(HandType.STRAIGHT_FLUSH));
-		assertThat(h.getScore(), is(Hand.SCORE_STRAIGHT_FLUSH + h.getHighCard().getScore()));
+		assertThat(h.getScore(), is(HandType.STRAIGHT_FLUSH.getScore() + h.getHighCard().getScore()));
 	}
 	
 	@Test

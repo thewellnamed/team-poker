@@ -1,15 +1,11 @@
 package poker;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 import poker.enums.HandType;
 import poker.enums.Rank;
-import poker.enums.Suit;
 
 /**
  * A played Hand
@@ -21,22 +17,6 @@ public class Hand implements Comparable<Hand> {
 	private HandType type;
 	
 	private static final int MAX_HAND_SIZE = 5;
-	
-	// scoring stratification
-	public static final long SCORE_HIGH_CARD 		= 0x1L << 35;
-	public static final long SCORE_PAIR				= 0x1L << 36;
-	public static final long SCORE_TRIPS 			= 0x1L << 37;
-	public static final long SCORE_STRAIGHT 		= 0x1L << 38;
-	public static final long SCORE_FLUSH 			= 0x1L << 39;
-	public static final long SCORE_FULL_HOUSE 		= 0x1L << 40;
-	public static final long SCORE_QUADS 			= 0x1L << 41;
-	public static final long SCORE_STRAIGHT_FLUSH 	= 0x1L << 42;
-	
-	private static final List<Long> scoreMap = Arrays.asList(0L, 
-			SCORE_HIGH_CARD, SCORE_PAIR, SCORE_TRIPS, SCORE_QUADS);
-	
-	private static final List<HandType> typeMap = 
-			Arrays.asList(HandType.INVALID, HandType.HIGH_CARD, HandType.PAIR, HandType.TRIPS, HandType.QUADS);
 
 	/**
      * Construct from Set
@@ -187,13 +167,13 @@ public class Hand implements Comparable<Hand> {
     	Card last = cards.last();
     	
 		if (first.getRank() == last.getRank()) {
-	    	int sz = cards.size();
-			type = typeMap.get(sz);
+			int sz = cards.size();
+	    	type = HandType.valueOf(sz);
 			
 			if (sz < 4) {
-				score = scoreMap.get(sz) | first.getScore();
+				score = type.getScore() | first.getScore();
 			} else {
-				score = scoreMap.get(sz) | (first.getRank().getScore() << 17);
+				score = type.getScore()  | (first.getRank().getScore() << 17);
 			}
 		}
     }
@@ -215,7 +195,7 @@ public class Hand implements Comparable<Hand> {
 				kicker = cards.first();
 			}
 			
-			score = SCORE_QUADS | (main.getRank().getScore() << 17) | kicker.getScore();					
+			score = type.getScore() | (main.getRank().getScore() << 17) | kicker.getScore();					
 		} else {
 			type = HandType.FULL_HOUSE;			
 			
@@ -227,7 +207,7 @@ public class Hand implements Comparable<Hand> {
 				kicker = cards.first();
 			}
 
-			score = SCORE_FULL_HOUSE | (main.getRank().getScore() << 17) | kicker.getRank().getScore();
+			score = type.getScore() | (main.getRank().getScore() << 17) | kicker.getRank().getScore();
 		}
     }
     
@@ -239,24 +219,21 @@ public class Hand implements Comparable<Hand> {
 		if (Long.bitCount(ranks) == 5) {
 			if ((cards.first().getRank().getScore() >> 4) == cards.last().getRank().getScore()) {
 				type = HandType.STRAIGHT;
-				score = SCORE_STRAIGHT | getHighCard().getScore();
+				score = type.getScore() | getHighCard().getScore();
 			}
 		}
 		
 		// flush or straight flush
 		if (Long.bitCount(suits) == 1) {
 			long flushValue = getHighCard().getScore();
-			long baseScore;
 			
 			if (type == HandType.STRAIGHT) {
 				type = HandType.STRAIGHT_FLUSH;
-				baseScore = SCORE_STRAIGHT_FLUSH;
 			} else {
 				type = HandType.FLUSH;
-				baseScore = SCORE_FLUSH;
 			}
 			
-			score = baseScore | flushValue;
+			score = type.getScore() | flushValue;
 		}
     }
 }
