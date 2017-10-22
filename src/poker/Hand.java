@@ -1,7 +1,6 @@
 package poker;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 import java.util.TreeSet;
 
 import poker.enums.HandType;
@@ -27,6 +26,13 @@ public class Hand implements Comparable<Hand> {
     }
     
     /**
+     * Construct from Collection
+     */
+    public Hand(Collection<Card> startingCards) {
+    	this(new TreeSet<Card>(startingCards));
+    }
+    
+    /**
      * Construct from string
      * @param cardStr String
      * @return Hand
@@ -43,6 +49,13 @@ public class Hand implements Comparable<Hand> {
     }
     
     /**
+     * Hand size
+     */
+    public int getSize() {
+    	return cards.size();
+    }
+    
+    /**
      * Get Validity
      */
     public boolean isValid() {
@@ -54,6 +67,14 @@ public class Hand implements Comparable<Hand> {
      */
     public long getScore() {
     	return score;
+    }
+    
+    /**
+     * Get cards in hand
+     * @return TreeSet<Card>
+     */
+    public TreeSet<Card> getCards() {
+    	return cards;
     }
     
     /**
@@ -77,7 +98,7 @@ public class Hand implements Comparable<Hand> {
      */
 	@Override
 	public int compareTo(Hand o) {
-		long ret = score - o.getScore();
+		long ret = o.getScore() - score;
 		return (ret < 0) ? -1 : (ret == 0 ? 0 : 1);
 	}
 	

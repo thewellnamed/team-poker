@@ -1,16 +1,17 @@
 package poker.player.bots;
 
+import java.util.ArrayList;
 import java.util.TreeSet;
 import poker.Card;
 import poker.Hand;
 
-public class PlayerAIBase implements IPokerBot {
+public abstract class PlayerAIBase implements IPokerBot {
 	
-	// Methods used by local engine
-	public Hand getNextHand(TreeSet<Card> cards, Hand lastHand) {
-		return null;
-	}
-	
-	// IPokerBot implementation allows this class to be dropped into
-	// other engines which use the same interface...
+	/**
+	 * Main API interface
+	 * @param cards Cards held by player
+	 * @param previous Hands previously played in this game
+	 * @return Hand to play
+	 */
+	public abstract Hand getNextHand(TreeSet<Card> cards, Hand last, ArrayList<Hand> previous);
 }

@@ -27,6 +27,10 @@ public enum HandType {
 		score = s;
 	}
 	
+	public int getSize() {
+		return numCards;
+	}
+	
 	public long getScore() {
 		return score;
 	}
@@ -48,5 +52,6 @@ public enum HandType {
 		cardMap.put(2, HandType.PAIR);
 		cardMap.put(3, HandType.TRIPS);
 		cardMap.put(4, HandType.QUADS);
+		cardMap.put(5, HandType.STRAIGHT);
 	}
 }
