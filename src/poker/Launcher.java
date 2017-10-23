@@ -25,7 +25,7 @@ public class Launcher {
 		Player c = new Player(Player.BOT, Player.SOUTH, "Alice", new RandomBot());
 		Player d = new Player(Player.BOT, Player.WEST, "Mallory", new RandomBot());
 		
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < 100000; i++) {
 			Game game = new Game(Arrays.asList(a, b, c, d));
 			ArrayList<Player> results = game.run();			
 			wins.put(results.get(0).getName(), wins.get(results.get(0).getName()) + 1);

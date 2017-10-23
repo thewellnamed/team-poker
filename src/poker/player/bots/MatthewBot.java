@@ -14,16 +14,16 @@ import poker.Logger;
  */
 public class MatthewBot extends PlayerAIBase {
 	
-	private int numCards;
+	private int cardHash;
 	
 	public MatthewBot() {
 		super();		
-		numCards = 0;
+		cardHash = 0;
 	}
 	
 	public Hand getNextHand(TreeSet<Card> cards, Hand last, ArrayList<Hand> previous) {
-		if (cards.size() != numCards) {
-			numCards = cards.size();
+		if (cards.hashCode() != cardHash) {
+			cardHash = cards.hashCode();
 			populateValidHands(cards);
 		}
 		
