@@ -7,6 +7,8 @@ import java.util.Random;
 import java.util.TreeSet;
 
 import static org.hamcrest.CoreMatchers.*;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
 import poker.Card;
@@ -178,10 +180,11 @@ public class HandTest {
 		hands.add(new Hand("JcJdJsJh"));
 		hands.add(new Hand("3s4s5s6s7s"));
 		
-		assertThat(hands.toString(), equalTo("[2c, 2s, 3h3c, 6s6d6c, 8h7h6d5s4c, Ks9s7s4s2s, 4s4c2s2d2c, As5s5h5d5c, JsJhJdJc, 7s6s5s4s3s]"));
+		assertThat(hands.toString(), equalTo("[7s6s5s4s3s, JsJhJdJc, As5s5h5d5c, 4s4c2s2d2c, Ks9s7s4s2s, 8h7h6d5s4c, 6s6d6c, 3h3c, 2s, 2c]"));
 	}
 	
 	@Test
+	@Ignore
 	public void testSpeed() {
 		TreeSet<Card> test = new TreeSet<Card>();
 		Deck deck = new Deck();

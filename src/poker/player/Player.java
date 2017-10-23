@@ -35,11 +35,15 @@ public class Player implements Comparable<Player> {
 		position = pos;
 		ai = bot;
 		
-		if (type == BOT && ai == null) {
-			throw new InvalidParameterException("bot player requires AI engine");
+		if (type == BOT) {
+			if (ai == null) {
+				throw new InvalidParameterException("bot player requires AI engine");	
+			}
+			
+			bot.setPlayerName(playerName);
 		}
 	}
-
+	
 	/**
 	 * Get Player name
 	 * @return
@@ -53,6 +57,14 @@ public class Player implements Comparable<Player> {
 	 */
 	public int getPosition() {
 		return position;
+	}
+	
+	/**
+	 * Player is a bot?
+	 * @return boolean
+	 */
+	public boolean isBot() {
+		return type == BOT;
 	}
 	
 	/** 
