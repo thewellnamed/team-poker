@@ -20,10 +20,10 @@ public class Launcher {
 		wins.put("Alice", 0);
 		wins.put("Mallory", 0);
 		
-		Player a = new Player(Player.BOT, Player.NORTH, "Bob", new MatthewBot());
-		Player b = new Player(Player.BOT, Player.EAST, "Sally", new RandomBot());
-		Player c = new Player(Player.BOT, Player.SOUTH, "Alice", new RandomBot());
-		Player d = new Player(Player.BOT, Player.WEST, "Mallory", new RandomBot());
+		Player a = new Player(Player.BOT, Player.NORTH, "Sally", new RandomBot());
+		Player b = new Player(Player.BOT, Player.EAST, "Alice", new RandomBot());
+		Player c = new Player(Player.BOT, Player.SOUTH, "Mallory", new RandomBot());
+		Player d = new Player(Player.BOT, Player.WEST, "Bob", new MatthewBot()); 
 		
 		for (int i = 0; i < 100000; i++) {
 			Game game = new Game(Arrays.asList(a, b, c, d));

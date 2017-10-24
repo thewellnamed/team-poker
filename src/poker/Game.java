@@ -138,6 +138,7 @@ public class Game {
 			} else {
 				lastSuccess = next;
 				last = play;
+				passed = 0;
 				playedHands.add(play);
 				nextPlayer.getCards().removeAll(play.getCards());
 				
