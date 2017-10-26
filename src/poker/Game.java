@@ -1,6 +1,7 @@
 package poker;
 
 import java.security.InvalidParameterException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
@@ -8,6 +9,11 @@ import java.util.TreeSet;
 import poker.enums.Rank;
 import poker.enums.Suit;
 import poker.player.Player;
+
+/**
+ * @author Charles Williams, Matthew Kauffman, Lorenzo Colmenero
+ * The gameplay.
+ */
 
 public class Game {
 	private Deck deck;
@@ -25,11 +31,11 @@ public class Game {
 		playedHands = new ArrayList<Hand>();		
 		deck = new Deck();
 
-		// sort based on position
+		// The sort is based on the position of the players/bots.
 		players.sort(null);
 		deck.shuffle();
 		
-		// deal cards and find first to play based on lowest card
+		// Deal the cards and the player/bot with the lowest card will go first. 
 		long lowestCard = Rank.ACE.getScore() | Suit.SPADES.getScore();
 				
 		for (int p = 0; p < players.size(); p++) {
@@ -48,7 +54,7 @@ public class Game {
 	}
 	
 	/**
-	 * Run the game until results determined
+	 * Run the game until the results determined.
 	 * @throws Exception 
 	 * @returns Array of players, winner first, then second place, etc.
 	 */
@@ -70,7 +76,7 @@ public class Game {
 				players.remove(winningPlayer);
 				
 				if (players.size() == 1) {
-					// game over!
+					// Game Over!
 					results.add(players.get(0));
 				}
 				
@@ -84,7 +90,7 @@ public class Game {
 	}
 	
 	/**
-	 * Executes one round of the game
+	 * Executes one round of the game.
 	 * @return player index of player if player runs out of cards
 	 *         else return -1
 	 * @throws Exception 
@@ -101,7 +107,8 @@ public class Game {
 			Logger.info("%s played hand %s", nextPlayer, play == null ? "pass" : play);
 			
 			if (play != null) {	
-				// must play cards you actually hold
+				// You have to play the correct cards in your hand. 
+				// This will check to see if you are playing the correct cards that are in your hand.
 				if (!nextPlayer.getCards().containsAll(play.getCards())) {
 					Logger.info("--- invalid hand.");
 					if (nextPlayer.isBot()) {
@@ -110,7 +117,8 @@ public class Game {
 					play = null;
 				}
 				
-				// must play a valid collection of cards
+				// You must play a valid collection of cards.
+				// This will check if the play is valid.
 				if (!play.isValid()) {
 					Logger.info("--- invalid hand.");
 					if (nextPlayer.isBot()) {
@@ -119,7 +127,8 @@ public class Game {
 					play = null;
 				}
 				
-				// must beat the previous hand
+				// The next hand must be the previous hand.
+				// This will check if the score of the new hand is greater than the previous hand. If not, return invalid.
 				else if (last != null) {
 					if (play.getSize() != last.getSize() || 
 					    play.getScore() < last.getScore()) {
@@ -142,7 +151,7 @@ public class Game {
 				playedHands.add(play);
 				nextPlayer.getCards().removeAll(play.getCards());
 				
-				// player has won, short circuit...
+				// The player has won, short circuit....
 				if (nextPlayer.getCards().size() == 0) {
 					return next;
 				}
@@ -153,18 +162,18 @@ public class Game {
 				
 		Logger.info("Round winner = %s", players.get(lastSuccess));
 		
-		// next round begins with winner of this round
+		// The winner of the current round will go first the next game.
 		next = lastSuccess;
 		return -1;
 	}
 	
 	/**
-	 * Re-initialize next turn to player with lowest card
+	 * Re-initialize next turn to the player with lowest card.
 	 */
 	private void setStartingPlayer() {
 		long lowestCard = Rank.ACE.getScore() | Suit.SPADES.getScore();
 		
-		// deal cards and find first to play based on lowest card
+		// Deal the cards and find the player who would be first to play based on the lowest card.
 		for (int p = 0; p < players.size(); p++) {
 			
 			Card lowest = players.get(p).getCards().last();

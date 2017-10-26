@@ -4,22 +4,25 @@ import java.security.InvalidParameterException;
 import java.util.HashMap;
 
 /**
- * Card Suit
+ * @author Charles Williams, Matthew Kauffman, Lorenzo Colmenero
+ * The card suit.
  */
+
 public enum Suit {
+	// (Suit label, Suit Value)
 	CLUBS		("c", 1, 1L),
 	DIAMONDS	("d", 2, 1L << 1),
 	HEARTS		("h", 3, 1L << 2),
 	SPADES		("s", 4, 1L << 3);
 	
-	// ------------
+	// --------------------------------------------------
 	
 	private String label;
 	private int suitId;
 	private long scoreValue;
 	
 	/** 
-	 * Private constructor
+	 * Private constructor.
 	 * @param lbl Used for string formatting
 	 * @param val Relative value
 	 */
@@ -30,14 +33,14 @@ public enum Suit {
 	}
 	
 	/**
-	 * Get ID
+	 * Get ID of the suit.
 	 */
 	public int getId() {
 		return suitId;
 	}
 	
 	/**
-	 * Get score value
+	 * Get score value of the suit.
 	 * @return long
 	 */
 	public long getScore() {
@@ -45,14 +48,13 @@ public enum Suit {
 	}
 	
 	/**
-	 * Get string label
+	 * Get string label of the suit.
 	 */
 	public String toString() {
 		return label;
 	}
 	
-	// Helper methods for creating Suits
-	
+	// Helper methods for creating the suits.
 	public static Suit ofValue(int id) {
 		Suit s = valMap.get(id);
 		

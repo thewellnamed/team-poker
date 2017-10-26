@@ -8,9 +8,11 @@ import poker.Hand;
 import poker.player.bots.PlayerAIBase;
 
 /**
- * Poker Player
- * Provides interface to AI Engine if type == BOT
+ * @author Charles Williams, Matthew Kauffman, Lorenzo Colmenero
+ * Poker Player.
+ * Provides interface to AI Engine if type == BOT.
  */
+
 public class Player implements Comparable<Player> {
 	private int type;
 	private String name;
@@ -27,7 +29,7 @@ public class Player implements Comparable<Player> {
 	public static final int WEST = 4;
 	
 	/**
-	 * Constructor
+	 * Constructor.
 	 */
 	public Player(int playerType, int pos, String playerName, PlayerAIBase bot) {
 		type = playerType;
@@ -45,7 +47,7 @@ public class Player implements Comparable<Player> {
 	}
 	
 	/**
-	 * Get Player name
+	 * Get the player name.
 	 * @return
 	 */
 	public String getName() {
@@ -53,14 +55,14 @@ public class Player implements Comparable<Player> {
 	}
 	
 	/**
-	 * Get Player position
+	 * Get the player position.
 	 */
 	public int getPosition() {
 		return position;
 	}
 	
 	/**
-	 * Player is a bot?
+	 * Is the player a bot?
 	 * @return boolean
 	 */
 	public boolean isBot() {
@@ -68,7 +70,7 @@ public class Player implements Comparable<Player> {
 	}
 	
 	/** 
-	 * Get cards held by player
+	 * Get the cards held by the player.
 	 * @return TreeSet<Card>
 	 */
 	public TreeSet<Card> getCards() {
@@ -76,14 +78,14 @@ public class Player implements Comparable<Player> {
 	}
 	
 	/**
-	 * Update cards held by Player
+	 * Update the cards held by the player.
 	 */
 	public void setCards(TreeSet<Card> c) {
 		cards = c;
 	}
 	
 	/**
-	 * Main game action 
+	 * Main game action. 
 	 * @param lastHand Last played hand in round
 	 * @return Hand to play
 	 */
@@ -92,16 +94,16 @@ public class Player implements Comparable<Player> {
 			return ai.getNextHand(cards, last, previous);
 		}
 		
-		// Player todo
+		// Player todo.
 		return null;
 	}
 
 	/** 
 	 * Player order (N->E->S->W)
+	 * North --> East --> South --> West --> North, etc.
 	 */
 	@Override
 	public int compareTo(Player o) {
-		// TODO Auto-generated method stub
 		return position - o.position;
 	}
 	

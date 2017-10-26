@@ -4,10 +4,12 @@ import java.security.InvalidParameterException;
 import java.util.HashMap;
 
 /**
- * Type of poker hand
+ * @author Charles Williams, Matthew Kauffman, Lorenzo Colmenero
+ * The types of poker hands and its value.
  */
+
 public enum HandType {
-						// number of cards, base score
+						// (Number of cards, Base score).
 	INVALID				(0, 0L),
 	HIGH_CARD			(1, 1L << 34),
 	PAIR				(2, 1L << 35),
@@ -16,7 +18,7 @@ public enum HandType {
 	FLUSH				(5, 1L << 38),
 	FULL_HOUSE			(5, 1L << 39),
 	QUADS				(4, 1L << 40),
-	QUADS_WITH_KICKER   (5, 1L << 40), // same as quads 
+	QUADS_WITH_KICKER   (5, 1L << 40), // Same as Quads. 
 	STRAIGHT_FLUSH		(5, 1L << 41);	
 	
 	private int numCards;

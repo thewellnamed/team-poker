@@ -9,6 +9,10 @@ import java.util.HashSet;
 import poker.Card;
 import poker.Deck;
 
+/**
+ * @author Charles Williams, Matthew Kauffman, Lorenzo Colmenero
+ */
+
 public class DeckTest {
 
 	@Test
@@ -33,16 +37,16 @@ public class DeckTest {
 			labels.add(c.toString());
 		}
 		
-		// 52 unique cards
+		// 52 unique cards, since its a 52 card deck after all, not accounting for the joker cards.
 		assertThat(cards.size(), is(52));
 		assertThat(labels.size(), is(52));
 		
-		// 4 of each rank
+		// 4 of each rank, since there's 4 suits in a typical playing card deck.
 		for (int i = 1; i < 14; i++) {
 			assertThat(ranks[i], is(4));
 		}
 		
-		// 13 of each suit
+		// 13 of each suit, since there's 13 cards per suit. 13 (suits) x 4 (ranks) = 52 cards.
 		for (int i = 1; i < 5; i++) {
 			assertThat(suits[i], is(13));
 		}

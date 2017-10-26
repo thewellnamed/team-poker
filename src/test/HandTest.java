@@ -17,6 +17,10 @@ import poker.Hand;
 import poker.enums.HandType;
 import poker.enums.Rank;
 
+/**
+ * @author Charles Williams, Matthew Kauffman, Lorenzo Colmenero
+ */
+
 public class HandTest {
 
 	@Test
@@ -192,7 +196,7 @@ public class HandTest {
 		Hand h;
 		Random rand = new Random(System.currentTimeMillis()); 
 		
-		for (int i = 0; i < 10000000; i++) { // 10 million times
+		for (int i = 0; i < 10000000; i++) { // 10 million times, because why not?
 			int cardCount = rand.nextInt(5) + 1;
 			test.clear();
 			

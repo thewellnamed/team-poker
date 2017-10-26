@@ -8,6 +8,10 @@ import poker.Card;
 import poker.enums.Rank;
 import poker.enums.Suit;
 
+/**
+ * @author Charles Williams, Matthew Kauffman, Lorenzo Colmenero
+ */
+
 public class CardTest {
 
 	@Test
@@ -16,7 +20,7 @@ public class CardTest {
 		assertThat(c.toString(), is("5s"));
 		assertThat(c.getScore(), equalTo(Rank.FIVE.getScore() | Suit.SPADES.getScore()));
 		
-		// case insensitive
+		// Case insensitive when playing cards.
 		c = new Card("AH");
 		assertThat(c.toString(), is("Ah"));
 		

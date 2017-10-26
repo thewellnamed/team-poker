@@ -7,9 +7,11 @@ import poker.enums.HandType;
 import poker.enums.Rank;
 
 /**
- * A played Hand
- * Provides hand evaluation and validation methods
+ * @author Charles Williams, Matthew Kauffman, Lorenzo Colmenero
+ * A played Hand.
+ * Provides hand evaluation and validation methods.
  */
+
 public class Hand implements Comparable<Hand> {
 	private TreeSet<Card> cards;
 	private long score;
@@ -18,7 +20,7 @@ public class Hand implements Comparable<Hand> {
 	private static final int MAX_HAND_SIZE = 5;
 
 	/**
-     * Construct from Set
+     * Construct from Set.
      */
     public Hand(TreeSet<Card> startingCards) {    	
     	cards = startingCards;
@@ -26,14 +28,14 @@ public class Hand implements Comparable<Hand> {
     }
     
     /**
-     * Construct from Collection
+     * Construct from Collection.
      */
     public Hand(Collection<Card> startingCards) {
     	this(new TreeSet<Card>(startingCards));
     }
     
     /**
-     * Construct from string
+     * Construct from string.
      * @param cardStr String
      * @return Hand
      */
@@ -42,35 +44,35 @@ public class Hand implements Comparable<Hand> {
     }
 
     /**
-     * Hand Type
+     * Hand Type.
      */
     public HandType getType() {
     	return type;
     }
     
     /**
-     * Hand size
+     * Hand size.
      */
     public int getSize() {
     	return cards.size();
     }
     
     /**
-     * Get Validity
+     * Get Validity.
      */
     public boolean isValid() {
     	return type != HandType.INVALID;
     }
     
     /**
-     * Get relative hand rank within type
+     * Get the relative hand rank within type.
      */
     public long getScore() {
     	return score;
     }
     
     /**
-     * Get cards in hand
+     * Get the cards in hand.
      * @return TreeSet<Card>
      */
     public TreeSet<Card> getCards() {
@@ -78,7 +80,7 @@ public class Hand implements Comparable<Hand> {
     }
     
     /**
-     * Get highest card in hand
+     * Get the highest card in hand.
      * @return Card
      */
     public Card getHighCard() {
@@ -86,7 +88,7 @@ public class Hand implements Comparable<Hand> {
     }
     
     /**
-     * Get string format
+     * Get string format.
      */
     @Override
     public String toString() {
@@ -94,7 +96,7 @@ public class Hand implements Comparable<Hand> {
     }
     
     /**
-     * Hand sorting by score
+     * Hand sorting is done by score.
      */
 	@Override
 	public int compareTo(Hand o) {
@@ -103,7 +105,7 @@ public class Hand implements Comparable<Hand> {
 	}
 	
 	/**
-	 * Two hands are equal if they have the same score
+	 * Two hands are equal if they have the same score.
 	 */
 	@Override
 	public boolean equals(Object o) {
@@ -124,7 +126,7 @@ public class Hand implements Comparable<Hand> {
 	}
         
     /**
-     * Validation and scoring
+     * Validation and scoring.
      */
     private void validate() {
     	type = HandType.INVALID;
@@ -132,22 +134,22 @@ public class Hand implements Comparable<Hand> {
     	
     	int handSize = cards.size();
     	    	
-    	// may only play 1 to 5 cards
+    	// A player can play between 1 to 5 card per turn.
     	if (handSize < 1 || handSize > MAX_HAND_SIZE) {
     		return;
     	}
 
-    	// hands of less than 5 cards may only be X-of-a-kind
-    	// X-of-a-kind score is the value of the highest suit
+    	// Hands that are less than 5 cards may only be X-of-a-kind.
+    	// X-of-a-kind score is the value of the highest suit.
     	if (handSize < 5) {
     		validateOfAKind();
     	}
     	
-    	// 5 card hand must be one of
-    	//    - 4 of a kind with kicker
-    	//    - straight
-    	//    - flush
-    	//    - full house
+    	// 5 card hand must be one of the following:
+    	//    - 4 of a kind with kicker,
+    	//    - straight,
+    	//    - flush,
+    	//    - full house.
     	else {
         	long ranksAndSuits = 0L;
         	int r1 = 0, r2 = 0;
@@ -169,7 +171,7 @@ public class Hand implements Comparable<Hand> {
         	long ranks = ranksAndSuits & 0xFFFF0;
         	long suits = ranksAndSuits & 0xF;
         	
-    		// full house or quads with kicker
+    		// Full house or quads with kicker.
     		if (Long.bitCount(ranks) == 2) {
     			validateFullHouseOrQuads(ranks, suits, r1, r2);
     		}
@@ -181,7 +183,7 @@ public class Hand implements Comparable<Hand> {
     }
     
     /**
-     * Set validity and score for high card, pair, trips, quads (no kicker)
+     * Set the validity and score for the high card, pair, trips, quads (no kicker).
      */
     private void validateOfAKind() {
     	Card first = cards.first();
@@ -200,7 +202,7 @@ public class Hand implements Comparable<Hand> {
     }
     
     /**
-     * Set validity and score for full houses and quads with kicker
+     * Set the validity and score for full houses and quads with kicker.
      */
     private void validateFullHouseOrQuads(long ranks, long suits, int r1, int r2) {
     	Card main, kicker;
@@ -236,7 +238,7 @@ public class Hand implements Comparable<Hand> {
      * Validate for straight or flush or straight flush
      */
     private void validateStraightsAndFlushes(long ranks, long suits) {
-		// straight
+		// Straight.
 		if (Long.bitCount(ranks) == 5) {
 			if ((cards.first().getRank().getScore() >> 4) == cards.last().getRank().getScore()) {
 				type = HandType.STRAIGHT;
@@ -244,7 +246,7 @@ public class Hand implements Comparable<Hand> {
 			}
 		}
 		
-		// flush or straight flush
+		// Flush or straight flush.
 		if (Long.bitCount(suits) == 1) {
 			long flushValue = getHighCard().getScore();
 			

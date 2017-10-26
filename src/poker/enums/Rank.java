@@ -4,10 +4,12 @@ import java.security.InvalidParameterException;
 import java.util.HashMap;
 
 /**
+ * @author Charles Williams, Matthew Kauffman, Lorenzo Colmenero
  * Card Rank (Two -> Ace)
  */
+
 public enum Rank {
-	// label, value
+	// (Card label, Card Value).
 	TWO		("2", 1, 1L << 4),
 	THREE	("3", 2, 1L << 5),
 	FOUR	("4", 3, 1L << 6),
@@ -29,7 +31,7 @@ public enum Rank {
 	private String label;
 	
 	/**
-	 * Private constructor
+	 * Private constructor.
 	 * @param lbl Used for string formatting
 	 * @param val Relative value
 	 */
@@ -40,14 +42,14 @@ public enum Rank {
 	}
 	
 	/**
-	 * Get ID
+	 * Get the ID of the rank.
 	 */
 	public int getId() {
 		return rankId;
 	}
 	
 	/**
-	 * Get score value
+	 * Get the score value of the rank.
 	 * @return long
 	 */
 	public long getScore() {
@@ -55,13 +57,13 @@ public enum Rank {
 	}
 	
 	/**
-	 * Get string
+	 * Get the string.
 	 */
 	public String toString() {
 		return label;
 	}
 	
-	// Helper methods for creating Ranks from value or string format
+	// Helper methods for creating Ranks from the values or the string format.
 	
 	public static Rank ofValue(int id) {
 		Rank r = valMap.get(id);

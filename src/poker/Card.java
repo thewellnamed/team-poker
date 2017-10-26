@@ -6,6 +6,11 @@ import java.util.Objects;
 
 import poker.enums.*;
 
+/**
+ * @author Charles Williams, Matthew Kauffman, Lorenzo Colmenero
+ * Hand class.
+ */
+
 public class Card implements Comparable<Card> {
 		
 	private Rank rank;
@@ -13,7 +18,7 @@ public class Card implements Comparable<Card> {
 	private long score;
 	   
 	/**
-     * Construct from rank and suit
+     * Construct from rank and suit.
      */
 	public Card(Rank r, Suit s) {
 		rank = r;
@@ -22,35 +27,35 @@ public class Card implements Comparable<Card> {
 	}
 	
 	/**
-	 * Construct from string
+	 * Construct from string.
 	 */
 	public Card(String c) {
 		this(Rank.ofValue(c.substring(0, 1)), Suit.ofValue(c.substring(1, 2)));
 	}
 	 
 	/**
-	 * Get suit
+	 * Get the suits.
 	 */
 	public Suit getSuit() {
 		return suit;
 	}
 	   
 	/**
-	 * Get rank
+	 * Get the ranks.
 	 */
 	public Rank getRank() {
 		return rank;
 	}
 	   
 	/**
-	 * Get relative card value
+	 * Get the relative card values.
 	 */
 	public long getScore() {
 		return score;
 	}
 	   
 	/**
-	 * Get string
+	 * Get the string.
 	 */
 	public String toString() {
 		return rank.toString() + suit.toString();
@@ -71,8 +76,8 @@ public class Card implements Comparable<Card> {
 	}
 	   
 	/**
-	 * Override hashCode in order to enforce 
-	 * card uniqueness in Set<Card>, i.e. only one 5c
+	 * Override hashCode in order to enforce.
+	 * card uniqueness in Set<Card>, i.e. only one 5c.
 	 */
 	@Override
 	public int hashCode() {
@@ -80,7 +85,7 @@ public class Card implements Comparable<Card> {
 	}
 	
 	/**
-	 * For TreeSet ordering (high card first)
+	 * For TreeSet ordering (high card first).
 	 */
 	@Override
 	public int compareTo(Card o) {
@@ -92,8 +97,8 @@ public class Card implements Comparable<Card> {
 	}
 	
 	/**
-	 * Factory methods
-	 * Dictionary of cards to avoid overhead
+	 * Factory methods.
+	 * Dictionary of cards to avoid overhead.
 	 */
 	
 	public static Collection<Card> getAllCards() {

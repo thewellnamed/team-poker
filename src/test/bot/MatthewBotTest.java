@@ -14,6 +14,12 @@ import poker.Card;
 import poker.Hand;
 import poker.player.bots.MatthewBot;
 
+/**
+ * @author Charles Williams, Matthew Kauffman, Lorenzo Colmenero
+ * This particular bot is used to test the different possible hand plays a player could do...
+ * Depending on what cards are in the hand.
+ */
+
 public class MatthewBotTest {
 	@Test
 	public void testValidHands() {

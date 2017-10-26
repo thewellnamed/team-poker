@@ -8,6 +8,10 @@ import java.util.TreeSet;
 import poker.Card;
 import poker.Utils;
 
+/**
+ * @author Charles Williams, Matthew Kauffman, Lorenzo Colmenero
+ */
+
 public class UtilsTest {
 
 	@Test

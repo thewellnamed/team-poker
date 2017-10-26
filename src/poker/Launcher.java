@@ -9,8 +9,10 @@ import poker.player.bots.MatthewBot;
 import poker.player.bots.RandomBot;
 
 /**
+ * @author Charles Williams, Matthew Kauffman, Lorenzo Colmenero
  * Main game engine
  */
+
 public class Launcher {
 	public static void main(String[] args) {
 		

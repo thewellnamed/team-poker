@@ -5,8 +5,10 @@ import java.util.Collections;
 import java.util.Random;
 
 /**
- * Deck
+ * @author Charles Williams, Matthew Kauffman, Lorenzo Colmenero
+ * Deck class.
  */
+
 public class Deck {
 	private ArrayList<Card> deck = new ArrayList<Card>();
 	private int top;
@@ -14,7 +16,7 @@ public class Deck {
 	private static final int SHUFFLE_COUNT = 1000;
 
 	/**
-	 * Construct
+	 * Construct the deck.
 	 */
 	public Deck() {
 		deck.addAll(Card.getAllCards());
@@ -22,7 +24,7 @@ public class Deck {
 	}
 	
 	/**
-	 * Get size
+	 * Get the size.
 	 * @return int
 	 */
 	public int size() {
@@ -30,7 +32,7 @@ public class Deck {
 	}
 	
 	/** 
-	 * Get all cards
+	 * Get all the cards.
 	 * @return ArrayList<Card>
 	 */
 	public ArrayList<Card> getCards() {
@@ -38,24 +40,24 @@ public class Deck {
 	}
 
 	/**
-	 * Shuffle deck
+	 * Shuffle the deck.
 	 */
 	public void shuffle() {
 		top = 0;
 		Random rand = new Random(System.currentTimeMillis()); 
 		for (int i = 0; i < SHUFFLE_COUNT; i++) {
-			// select random values to swap
+			// Select random values in the deck to shuffle.
 			int pos1 = rand.nextInt(52);
 			int pos2 = rand.nextInt(52);
 
-			// swap
+			// Shuffle/Swap the deck.
 			Collections.swap(deck, pos1, pos2);
 		}
 	}
 
 	/**
-	 * Is deck empty?
-	 * 
+	 * Is the deck empty?
+	 * This will check if the deck is empty.
 	 * @return boolean
 	 */
 	public boolean empty() {
@@ -63,7 +65,7 @@ public class Deck {
 	}
 
 	/**
-	 * Deal next card from top of deck
+	 * Deal the next card from the top of the deck.
 	 * 
 	 * @return Card
 	 */

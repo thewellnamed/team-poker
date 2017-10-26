@@ -10,8 +10,10 @@ import poker.Hand;
 import poker.Logger;
 
 /**
- * Matthew's AI
+ * @author Charles Williams, Matthew Kauffman, Lorenzo Colmenero
+ * Matthew's bot AI.
  */
+
 public class MatthewBot extends PlayerAIBase {
 	
 	private int cardHash;
@@ -31,7 +33,7 @@ public class MatthewBot extends PlayerAIBase {
 		
 		if (last == null) {
 			// Todo implement hand selection logic...
-			// currently playing lowest possible hand
+			// Currently playing lowest possible hand.
 			for (int i = 1; i <= 5; i++) {
 				TreeSet<Hand> hands = validHands.get(i);
 				if (hands.size() > 0) {
@@ -59,7 +61,7 @@ public class MatthewBot extends PlayerAIBase {
 	}
 	
 	/**
-	 * To string
+	 * To string.
 	 */
 	@Override 
 	public String toString() {

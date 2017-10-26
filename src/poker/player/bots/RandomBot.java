@@ -12,12 +12,14 @@ import poker.Hand;
 import poker.Logger;
 
 /**
- * Random Bot
+ * @author Charles Williams, Matthew Kauffman, Lorenzo Colmenero
+ * 
+ * Random Bot.
  * Basic algorithm: 
- *    
- *    Play a random hand if no previous
- *    Play a random better hand if previous
+ *    Play a random hand if no previous.
+ *    Play a random better hand if previous.
  */
+
 public class RandomBot extends PlayerAIBase {
 	
 	private int cardHash;
@@ -79,7 +81,7 @@ public class RandomBot extends PlayerAIBase {
 	}
 	
 	/**
-	 * To string
+	 * To string.
 	 */
 	@Override 
 	public String toString() {
