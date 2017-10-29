@@ -29,15 +29,12 @@ public class MatthewBot extends PlayerAIBase {
 			populateValidHands(cards);
 		}
 		
-		Logger.info("%s taking turn: cards=%d", this, cards.size());
-		
 		if (last == null) {
 			// Todo implement hand selection logic...
 			// Currently playing lowest possible hand.
 			for (int i = 1; i <= 5; i++) {
 				TreeSet<Hand> hands = validHands.get(i);
 				if (hands.size() > 0) {
-					Logger.info("--- playing hand: %s", hands.first());
 					return hands.last();
 				}
 			}
@@ -45,7 +42,6 @@ public class MatthewBot extends PlayerAIBase {
 			TreeSet<Hand> hands = validHands.get(last.getSize());
 			
 			if (hands.isEmpty()) {
-				Logger.info("--- pass");
 				return null;
 			}
 			
@@ -55,8 +51,7 @@ public class MatthewBot extends PlayerAIBase {
 			}
 			
 		}
-		
-		Logger.info("--- pass");
+
 		return null;
 	}
 	

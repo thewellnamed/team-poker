@@ -17,8 +17,6 @@ public class Hand implements Comparable<Hand> {
 	private long score;
 	private HandType type;
 	
-	private static final int MAX_HAND_SIZE = 5;
-
 	/**
      * Construct from Set.
      */
@@ -135,12 +133,12 @@ public class Hand implements Comparable<Hand> {
     	int handSize = cards.size();
     	    	
     	// A player can play between 1 to 5 card per turn.
-    	if (handSize < 1 || handSize > MAX_HAND_SIZE) {
+    	if (handSize < 1 || handSize > Rules.MAX_HAND_SIZE) {
     		return;
     	}
 
     	// Hands that are less than 5 cards may only be X-of-a-kind.
-    	// X-of-a-kind score is the value of the highest suit.
+    	// X-of-a-kind score is the value of the highest card in the hand
     	if (handSize < 5) {
     		validateOfAKind();
     	}

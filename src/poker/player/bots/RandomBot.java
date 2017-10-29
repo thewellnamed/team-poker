@@ -37,8 +37,6 @@ public class RandomBot extends PlayerAIBase {
 			populateValidHands(cards);
 		}
 		
-		Logger.info("%s taking turn: cards=%d", this, cards.size());
-		
 		if (last == null) {
 			Hand h = null;
 			do {
@@ -62,7 +60,6 @@ public class RandomBot extends PlayerAIBase {
 			TreeSet<Hand> hands = validHands.get(last.getSize());
 			
 			if (hands.isEmpty()) {
-				Logger.info("--- pass");
 				return null;
 			}
 			
@@ -76,7 +73,6 @@ public class RandomBot extends PlayerAIBase {
 			}
 		}
 		
-		Logger.info("--- pass");
 		return null;
 	}
 	

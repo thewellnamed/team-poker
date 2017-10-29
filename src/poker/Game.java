@@ -14,7 +14,6 @@ import poker.player.Player;
  * @author Charles Williams, Matthew Kauffman, Lorenzo Colmenero
  * The gameplay.
  */
-
 public class Game {
 	private Deck deck;
 	private ArrayList<Player> players;
@@ -22,9 +21,10 @@ public class Game {
 	private ArrayList<Player> results;
 	private int next;
 	
-	public static final int MAX_PLAYERS = 4;
-	public static final int CARDS_PER_PLAYER = 13;
-	
+	/**
+	 * Initialize game
+	 * @param newPlayers Players
+	 */
 	public Game(List<Player> newPlayers) {		
 		players = new ArrayList<Player>(newPlayers);
 		results = new ArrayList<Player>();
@@ -36,11 +36,10 @@ public class Game {
 		deck.shuffle();
 		
 		// Deal the cards and the player/bot with the lowest card will go first. 
-		long lowestCard = Rank.ACE.getScore() | Suit.SPADES.getScore();
-				
+		long lowestCard = Rank.ACE.getScore() | Suit.SPADES.getScore();		
 		for (int p = 0; p < players.size(); p++) {
 			TreeSet<Card> cards = new TreeSet<Card>();
-			for (int j = 0; j < CARDS_PER_PLAYER; j++) {
+			for (int j = 0; j < Rules.CARDS_PER_PLAYER; j++) {
 				cards.add(deck.getNextCard());
 			}
 			
@@ -52,51 +51,78 @@ public class Game {
 			players.get(p).setCards(cards);
 		}
 	}
+
+	/**
+	 * Run until complete
+	 */
+	public ArrayList<Player> run() throws IllegalStateException {
+		return run(-1);
+	}
 	
 	/**
-	 * Run the game until the results determined.
+	 * Run for maxRounds rounds
+	 * @param maxRounds Stop execution after a set number of rounds
 	 * @throws Exception 
 	 * @returns Array of players, winner first, then second place, etc.
 	 */
-	public ArrayList<Player> run() throws IllegalStateException {		
+	public ArrayList<Player> run(int maxRounds) throws IllegalStateException {		
 		int numPlayers = players.size();
-		int winningPlayer;
-		int roundCount = 1;
+		int roundCount = 0;
+		Player winningPlayer;
 			
-		if (numPlayers < 2 || numPlayers > MAX_PLAYERS) {
-			throw new InvalidParameterException("Max 4 players");
+		if (numPlayers < 2 || numPlayers > Rules.MAX_PLAYERS) {
+			throw new InvalidParameterException(String.format("Max %d players", Rules.MAX_PLAYERS));
 		}
 		
 		do {
+			roundCount++;
 			winningPlayer = round();
-			if (winningPlayer >= 0) {
-				Player wp = players.get(winningPlayer);
-				Logger.info("found winner %d: %s", results.size() + 1, wp);
-				results.add(players.get(winningPlayer));
+			if (winningPlayer != null) {
+				Logger.info("found winner %d: %s", results.size() + 1, winningPlayer);
+				results.add(winningPlayer);
 				players.remove(winningPlayer);
 				
 				if (players.size() == 1) {
 					// Game Over!
 					results.add(players.get(0));
+				} else {
+					setStartingPlayer();
 				}
-				
-				setStartingPlayer();
 			}
-			roundCount++;
-		} while (results.size() < numPlayers);
+		} while (results.size() < numPlayers && (maxRounds < 0 || roundCount < maxRounds));
 		
 		Logger.info("ran for %d rounds", roundCount);
 		return results;
 	}
 	
 	/**
+	 * Returns next player to play
+	 */
+	public Player getNextPlayer() {
+		return players.get(next);
+	}
+	
+	/**
+	 * Override next player to play (testing)
+	 */
+	public void setNextPlayer(int player) {
+		next = player;
+	}
+	
+	/**
+	 * Get current results array
+	 */
+	public ArrayList<Player> getCurrentResults() {
+		return results;
+	}
+	
+	/**
 	 * Executes one round of the game.
-	 * @return player index of player if player runs out of cards
-	 *         else return -1
+	 * @return player if round winner runs out of cards
+	 *         else return null
 	 * @throws Exception 
 	 */
-	private int round() throws IllegalStateException {
-		int passed = 0;
+	private Player round() throws IllegalStateException {
 		int lastSuccess = next;
 		Hand last = null;
 		
@@ -107,64 +133,35 @@ public class Game {
 			Logger.info("%s played hand %s", nextPlayer, play == null ? "pass" : play);
 			
 			if (play != null) {	
-				// You have to play the correct cards in your hand. 
-				// This will check to see if you are playing the correct cards that are in your hand.
-				if (!nextPlayer.getCards().containsAll(play.getCards())) {
-					Logger.info("--- invalid hand.");
-					if (nextPlayer.isBot()) {
-						throw new IllegalStateException("bot played invalid hand");
-					}
+				int valid = Rules.checkHand(nextPlayer,  play, last);
+				if (valid < 0) {
 					play = null;
-				}
-				
-				// You must play a valid collection of cards.
-				// This will check if the play is valid.
-				if (!play.isValid()) {
-					Logger.info("--- invalid hand.");
+					
 					if (nextPlayer.isBot()) {
-						throw new IllegalStateException("bot played invalid hand");
-					}
-					play = null;
-				}
-				
-				// The next hand must be the previous hand.
-				// This will check if the score of the new hand is greater than the previous hand. If not, return invalid.
-				else if (last != null) {
-					if (play.getSize() != last.getSize() || 
-					    play.getScore() < last.getScore()) {
-						
-						Logger.info("--- Does not beat last hand");
-						if (nextPlayer.isBot()) {
-							throw new IllegalStateException("bot played invalid hand");
-						}
-						play = null;
+						throw new IllegalStateException("Bot played invalid hand: err = " + valid);
+					} else {
+						// todo: prompt human player to try again...
 					}
 				}
 			}
 					
-			if (play == null) {
-				passed++;
-			} else {
+			if (play != null) {
 				lastSuccess = next;
 				last = play;
-				passed = 0;
 				playedHands.add(play);
 				nextPlayer.getCards().removeAll(play.getCards());
 				
 				// The player has won, short circuit....
 				if (nextPlayer.getCards().size() == 0) {
-					return next;
+					return nextPlayer;
 				}
 			}
 			
 			next = (next + 1) % players.size();
-		} while (passed < players.size() - 1);
+		} while (next != lastSuccess);
 				
-		Logger.info("Round winner = %s", players.get(lastSuccess));
-		
-		// The winner of the current round will go first the next game.
-		next = lastSuccess;
-		return -1;
+		Logger.info("Round winner = %s\n", players.get(lastSuccess));
+		return null;
 	}
 	
 	/**
