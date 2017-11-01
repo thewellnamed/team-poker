@@ -5,6 +5,7 @@ import java.util.TreeSet;
 import java.security.InvalidParameterException;
 import poker.Card;
 import poker.Hand;
+import poker.io.UserInput;
 import poker.player.bots.PlayerAIBase;
 
 /**
@@ -29,7 +30,14 @@ public class Player implements Comparable<Player> {
 	public static final int WEST = 4;
 	
 	/**
-	 * Constructor.
+	 * Constructor for human
+	 */
+	public Player(int playerType, int pos, String playerName) {
+		this(playerType, pos, playerName, null);
+	}
+
+	/**
+	 * Constructor with AI engine
 	 */
 	public Player(int playerType, int pos, String playerName, PlayerAIBase bot) {
 		type = playerType;
@@ -94,8 +102,8 @@ public class Player implements Comparable<Player> {
 			return ai.getNextHand(cards, last, previous);
 		}
 		
-		// Player todo.
-		return null;
+		// Get hand from human player
+		return UserInput.getPlayerHand(this, last);
 	}
 
 	/** 

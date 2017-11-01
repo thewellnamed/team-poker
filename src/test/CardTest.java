@@ -16,17 +16,23 @@ public class CardTest {
 
 	@Test
 	public void testFromString() {
-		Card c = new Card("5s");
+		Card c = Card.ofValue("5s");
 		assertThat(c.toString(), is("5s"));
 		assertThat(c.getScore(), equalTo(Rank.FIVE.getScore() | Suit.SPADES.getScore()));
 		
 		// Case insensitive when playing cards.
-		c = new Card("AH");
+		c = Card.ofValue("Ah");
 		assertThat(c.toString(), is("Ah"));
 		
-		c = new Card("Td");
+		c = Card.ofValue("Td");
 		assertThat(c.getRank(), is(Rank.TEN));
 		assertThat(c.getSuit(), is(Suit.DIAMONDS));
+	}
+	
+	@Test
+	public void testInvalidCard() {
+		Card c = Card.ofValue("13f");
+		assertThat(c, equalTo(null));
 	}
 
 }

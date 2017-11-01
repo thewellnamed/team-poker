@@ -1,5 +1,7 @@
 package poker;
 
+import java.util.TreeSet;
+
 import poker.player.Player;
 
 public class Rules {
@@ -11,19 +13,26 @@ public class Rules {
 	// Hand validity results
 	public static final int HAND_VALID = 0;
 	public static final int HAND_INVALID = -1;
-	public static final int HAND_INVALID_PLAYER_CARDS = -1;
-	public static final int HAND_INVALID_LOW_SCORE = -2;
+	public static final int HAND_INVALID_PLAYER_CARDS = -2;
+	public static final int HAND_INVALID_LOW_SCORE = -3;
+	public static final int HAND_INVALID_STARTING_CARD = -4;
 	
-	public static int checkHand(Player player, Hand hand, Hand last) {
+	public static int checkHand(Player player, Hand hand, Hand last, Card mustPlay) {
 		// You must play a valid collection of cards.
 		if (!hand.isValid()) {
 			return HAND_INVALID;
 		}		
 		
-		// You have to play the correct cards in your hand. 
+		// You have to play cards you hold.
 		if (!player.getCards().containsAll(hand.getCards())) {
 			return HAND_INVALID_PLAYER_CARDS;
 		}
+		
+		// Enforce starting card rule
+		// Todo: re-enable after bot logic is updated...
+		//if (mustPlay != null && !hand.getCards().contains(mustPlay)) {
+		//	return HAND_INVALID_STARTING_CARD;
+		//}
 				
 		// The next hand must beat the previous hand.
 		if (last != null) {

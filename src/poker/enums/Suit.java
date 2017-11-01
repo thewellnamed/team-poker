@@ -56,23 +56,11 @@ public enum Suit {
 	
 	// Helper methods for creating the suits.
 	public static Suit ofValue(int id) {
-		Suit s = valMap.get(id);
-		
-		if (s == null) {
-			throw new InvalidParameterException("Requested unknown suit");
-		}
-		
-		return s;
+		return valMap.get(id);
 	}
 	
 	public static Suit ofValue(String lbl) {
-		Suit s = lblMap.get(lbl.toLowerCase());
-		
-		if (s == null) {
-			throw new InvalidParameterException("Requested unknown suit");
-		}
-		
-		return s;
+		return lblMap.get(lbl.toLowerCase());
 	}
 	
 	private static HashMap<String, Suit> lblMap = new HashMap<String, Suit>();

@@ -18,44 +18,44 @@ public class Card implements Comparable<Card> {
 	private long score;
 	   
 	/**
-     * Construct from rank and suit.
+     * Construct from rank and suit. (Private)
      */
-	public Card(Rank r, Suit s) {
+	private Card(Rank r, Suit s) {
 		rank = r;
 		suit = s;
 		score = rank.getScore() | suit.getScore();
 	}
 	
 	/**
-	 * Construct from string.
+	 * Construct from string. (Private)
 	 */
-	public Card(String c) {
+	private Card(String c) {
 		this(Rank.ofValue(c.substring(0, 1)), Suit.ofValue(c.substring(1, 2)));
 	}
 	 
 	/**
-	 * Get the suits.
+	 * Get the suit
 	 */
 	public Suit getSuit() {
 		return suit;
 	}
 	   
 	/**
-	 * Get the ranks.
+	 * Get the rank
 	 */
 	public Rank getRank() {
 		return rank;
 	}
 	   
 	/**
-	 * Get the relative card values.
+	 * Get the relative card value
 	 */
 	public long getScore() {
 		return score;
 	}
 	   
 	/**
-	 * Get the string.
+	 * To String
 	 */
 	public String toString() {
 		return rank.toString() + suit.toString();
@@ -106,13 +106,7 @@ public class Card implements Comparable<Card> {
 	}
 	
 	public static Card ofValue(String cardStr) {
-		Card c = cards.get(cardStr);
-		
-		if (c == null) {
-			return new Card(cardStr);
-		}
-		
-		return c;
+		return cards.get(cardStr);
 	}
 	
 	private static HashMap<String, Card> cards = new HashMap<String, Card>();

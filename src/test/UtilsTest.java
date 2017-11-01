@@ -18,32 +18,32 @@ public class UtilsTest {
 	public void testGetCardsFromString() {
 		TreeSet<Card> cards = Utils.getCardsFromString("5d 5c 5s 5h");
 		assertThat(cards.size(), is(4));
-		assertThat(cards.contains(new Card("5c")), is(true));
-		assertThat(cards.contains(new Card("5d")), is(true));
-		assertThat(cards.contains(new Card("5h")), is(true));
-		assertThat(cards.contains(new Card("5s")), is(true));
+		assertThat(cards.contains(Card.ofValue("5c")), is(true));
+		assertThat(cards.contains(Card.ofValue("5d")), is(true));
+		assertThat(cards.contains(Card.ofValue("5h")), is(true));
+		assertThat(cards.contains(Card.ofValue("5s")), is(true));
 	}
 	
 	@Test
 	public void testNoSpaces() {
 		TreeSet<Card> cards = Utils.getCardsFromString("AdKdQdJdTd");
 		assertThat(cards.size(), is(5));
-		assertThat(cards.contains(new Card("Ad")), is(true));
-		assertThat(cards.contains(new Card("Kd")), is(true));
-		assertThat(cards.contains(new Card("Qd")), is(true));
-		assertThat(cards.contains(new Card("Jd")), is(true));
-		assertThat(cards.contains(new Card("Td")), is(true));
+		assertThat(cards.contains(Card.ofValue("Ad")), is(true));
+		assertThat(cards.contains(Card.ofValue("Kd")), is(true));
+		assertThat(cards.contains(Card.ofValue("Qd")), is(true));
+		assertThat(cards.contains(Card.ofValue("Jd")), is(true));
+		assertThat(cards.contains(Card.ofValue("Td")), is(true));
 	}
 	
 	@Test 
 	public void testGetCardString() {
 		TreeSet<Card> cards = new TreeSet<Card>();
-		cards.add(new Card("As"));
-		cards.add(new Card("Ad"));
-		cards.add(new Card("5c"));
+		cards.add(Card.ofValue("As"));
+		cards.add(Card.ofValue("Ad"));
+		cards.add(Card.ofValue("5c"));
 		
 		// TreeSet sorts...
-		assertThat(Utils.getCardString(cards), is("AsAd5c"));
+		assertThat(Utils.getCardString(cards), is("As Ad 5c"));
 	}
 
 }

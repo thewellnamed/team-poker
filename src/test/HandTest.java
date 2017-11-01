@@ -184,7 +184,7 @@ public class HandTest {
 		hands.add(new Hand("JcJdJsJh"));
 		hands.add(new Hand("3s4s5s6s7s"));
 		
-		assertThat(hands.toString(), equalTo("[7s6s5s4s3s, JsJhJdJc, As5s5h5d5c, 4s4c2s2d2c, Ks9s7s4s2s, 8h7h6d5s4c, 6s6d6c, 3h3c, 2s, 2c]"));
+		assertThat(hands.toString(), equalTo("[7s 6s 5s 4s 3s, Js Jh Jd Jc, As 5s 5h 5d 5c, 4s 4c 2s 2d 2c, Ks 9s 7s 4s 2s, 8h 7h 6d 5s 4c, 6s 6d 6c, 3h 3c, 2s, 2c]"));
 	}
 	
 	@Test

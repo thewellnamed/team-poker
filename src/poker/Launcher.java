@@ -22,14 +22,12 @@ public class Launcher {
 		wins.put("Alice", 0);
 		wins.put("Mallory", 0);
 		
-		Player a = new Player(Player.BOT, Player.NORTH, "Sally", new RandomBot());
-		Player b = new Player(Player.BOT, Player.EAST, "Alice", new RandomBot());
-		Player c = new Player(Player.BOT, Player.SOUTH, "Mallory", new RandomBot());
-		Player d = new Player(Player.BOT, Player.WEST, "Bob", new MatthewBot()); 
+		Player a = new Player(Player.BOT, Player.NORTH, "Sally", new MatthewBot());
+		Player b = new Player(Player.HUMAN, Player.EAST, "Bob"); 
 		
 		for (int i = 0; i < 1; i++) {
-			Game game = new Game(Arrays.asList(a, b, c, d));
-			ArrayList<Player> results = game.run(1);			
+			Game game = new Game(Arrays.asList(a, b));
+			ArrayList<Player> results = game.run();			
 			wins.put(results.get(0).getName(), wins.get(results.get(0).getName()) + 1);
 		}
 		

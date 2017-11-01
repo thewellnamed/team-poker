@@ -66,23 +66,11 @@ public enum Rank {
 	// Helper methods for creating Ranks from the values or the string format.
 	
 	public static Rank ofValue(int id) {
-		Rank r = valMap.get(id);
-		
-		if (r == null) {
-			throw new InvalidParameterException("Requested unknown rank");
-		}
-		
-		return r;
+		return valMap.get(id);
 	}
 	
 	public static Rank ofValue(String lbl) {
-		Rank r = lblMap.get(lbl.toUpperCase());
-		
-		if (r == null) {
-			throw new InvalidParameterException("Requested unknown rank");
-		}
-		
-		return r;
+		return lblMap.get(lbl.toUpperCase());
 	}
 	
 	private static HashMap<String, Rank> lblMap = new HashMap<String, Rank>();
