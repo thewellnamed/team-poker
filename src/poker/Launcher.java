@@ -18,7 +18,7 @@ public class Launcher {
 	public static void main(String[] args) {
 		// prompt user for game setup
 		int playerCount = UserInput.getPlayerCount(Rules.MAX_PLAYERS);
-		int roundCount = 0;
+		int roundCount = 1;
 		
 		ArrayList<Player> players = new ArrayList<Player>();
 		HashMap<Player, GameResults> results = new HashMap<Player, GameResults>();
