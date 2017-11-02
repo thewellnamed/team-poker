@@ -61,7 +61,8 @@ public abstract class PlayerAIBase implements IPokerBot {
 	}
 	
 	/**
-	 * Find the best valid hand for each type from the available cards.
+	 * Enumerate all valid hands
+	 * Todo: does not actually enumerate all straights and flushes...
 	 * @param cards Cards held by Player
 	 * @return Map from HandType -> Available valid hands
 	 */
@@ -88,8 +89,11 @@ public abstract class PlayerAIBase implements IPokerBot {
 		Iterator<Card> iter = cards.iterator();
 		while (iter.hasNext()) {
 			Card c = iter.next();
+			
+			// High card
+			validHands.get(1).add(new Hand(Arrays.asList(c)));
 					
-			// If rank is changing, update of-a-kind hands and check for straights.
+			// If rank is changing, update of-a-kind hands and check for straights
 			if (lastRank == null || c.getRank() != lastRank) {
 				if (lastRank != null && ((lastRank.getScore() >> 1) != c.getRank().getScore())) {
 					straight.clear();
@@ -98,9 +102,6 @@ public abstract class PlayerAIBase implements IPokerBot {
 				straight.add(c);
 				lastRank = c.getRank();
 				
-				// High card.
-				validHands.get(1).add(new Hand(Arrays.asList(c)));
-				
 				// X of a kind.
 				if (ofAKind.size() > 1) {
 					validHands.get(ofAKind.size()).add(new Hand(ofAKind));
@@ -108,7 +109,7 @@ public abstract class PlayerAIBase implements IPokerBot {
 				
 				ofAKind.clear();
 				
-				// Straight or straight flush.
+				// Straight or straight flush
 				if (straight.size() == 5) {
 					validHands.get(5).add(new Hand(straight));
 					
@@ -117,18 +118,18 @@ public abstract class PlayerAIBase implements IPokerBot {
 				}
 			} 
 			
-			// Rolling X-of-a-kind.
+			// Rolling X-of-a-kind
 			ofAKind.add(c);
 			if (ofAKind.size() > 1) {
 				validHands.get(ofAKind.size()).add(new Hand(ofAKind));
 			}
 			
-			// Remember the suits.
+			// Remember the suits
 			TreeSet<Card> ofSuit = suits.get(c.getSuit());
 			ofSuit.add(c);
 		}
 		
-		// Flushes.
+		// Flushes
 		for (Suit s : suits.keySet()) {
 			TreeSet<Card> suitCards = suits.get(s);
 			
@@ -151,41 +152,46 @@ public abstract class PlayerAIBase implements IPokerBot {
 			}
 		}
 		
-		// Full House.
+		// Full Houses
 		TreeSet<Hand> trips = validHands.get(3);
 		TreeSet<Hand> pairs = validHands.get(2);
 		
-		if (trips.size() > 0 && pairs.size() > trips.size()) {
-			TreeSet<Card> fh = (TreeSet<Card>) trips.first().getCards().clone();
-			
-			// All trips will also be in pairs.
-			// Skip over them...
-			Iterator<Hand> pairIter = pairs.iterator();
-			for (int i = 0; i < trips.size(); i++) pairIter.next();
-			fh.addAll(pairIter.next().getCards());
-			validHands.get(5).add(new Hand(fh));
-		}
-		
-		// Quads with Kicker.
-		TreeSet<Hand> quads = validHands.get(4);
-		if (quads.size() > 0) {
-			TreeSet<Card> qk = (TreeSet<Card>) quads.first().getCards().clone();
-			
-			// Quad aces would also be the high card...
-			Iterator<Hand> highCardIter = validHands.get(1).iterator();
-			Hand h = highCardIter.next();
-			
-			if (h.getHighCard().getRank() == qk.first().getRank()) {
-				if (highCardIter.hasNext()) {
-					h = highCardIter.next();
-				} else {
-					h = null;
+		if (trips.size() > 0 && (trips.size() > 1 || pairs.size() > trips.size())) {
+			Iterator<Hand> tripsIter = trips.iterator();
+			while (tripsIter.hasNext()) {
+				Hand t = tripsIter.next();
+				Iterator<Hand> pairIter = pairs.iterator();
+				while (pairIter.hasNext()) {
+					Hand p = pairIter.next();
+					
+					if (t.getHighCard().getRank() != p.getHighCard().getRank()) {
+						TreeSet<Card> fh = new TreeSet<Card>(t.getCards());
+						fh.addAll(p.getCards());
+						validHands.get(5).add(new Hand(fh));
+					}
 				}
 			}
-			
-			if (h != null) {
-				qk.addAll(h.getCards());
-				validHands.get(5).add(new Hand(qk));
+		}
+		
+		// Quads with Kicker
+		TreeSet<Hand> quads = validHands.get(4);
+		if (quads.size() > 0) {
+			Iterator<Hand> quadsIter = quads.iterator();
+			while (quadsIter.hasNext()) {
+				Hand quadHand = quadsIter.next();
+
+				TreeSet<Hand> highCardHands = validHands.get(1);
+				if (highCardHands.size() > 0) {
+					Iterator<Hand> highCardIter = validHands.get(1).iterator();
+					while (highCardIter.hasNext()) {
+						Hand h = highCardIter.next();
+						if (h.getHighCard().getRank() != quadHand.getHighCard().getRank()) {
+							TreeSet<Card> qk = new TreeSet<Card>(quadHand.getCards());
+							qk.addAll(h.getCards());
+							validHands.get(5).add(new Hand(qk));
+						}
+					}
+				}
 			}
 		}
 	}

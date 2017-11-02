@@ -37,7 +37,13 @@ public class RandomBot extends PlayerAIBase {
 			populateValidHands(cards);
 		}
 		
-		if (last == null) {
+		// opening bid must include lowest card...
+		// for now always open just single card low
+		if (previous == null || previous.size() == 0) {
+			return validHands.get(1).last();
+		}
+		
+		else if (last == null) {
 			Hand h = null;
 			do {
 				int type = rand.nextInt(5) + 1;

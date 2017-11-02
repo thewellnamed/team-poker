@@ -29,7 +29,13 @@ public class MatthewBot extends PlayerAIBase {
 			populateValidHands(cards);
 		}
 		
-		if (last == null) {
+		// opening bid must include lowest card...
+		// for now always open just single card low
+		if (previous == null || previous.size() == 0) {
+			return validHands.get(1).last();
+		}
+		
+		else if (last == null) {
 			// Todo implement hand selection logic...
 			// Currently playing lowest possible hand.
 			for (int i = 1; i <= 5; i++) {

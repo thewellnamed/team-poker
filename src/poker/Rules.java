@@ -29,10 +29,9 @@ public class Rules {
 		}
 		
 		// Enforce starting card rule
-		// Todo: re-enable after bot logic is updated...
-		//if (mustPlay != null && !hand.getCards().contains(mustPlay)) {
-		//	return HAND_INVALID_STARTING_CARD;
-		//}
+		if (mustPlay != null && !hand.getCards().contains(mustPlay)) {
+			return HAND_INVALID_STARTING_CARD;
+		}
 				
 		// The next hand must beat the previous hand.
 		if (last != null) {
