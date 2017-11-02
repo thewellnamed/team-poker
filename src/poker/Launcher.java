@@ -1,12 +1,13 @@
 package poker;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import poker.io.UserInput;
 import poker.player.Player;
-import poker.player.bots.MatthewBot;
-import poker.player.bots.RandomBot;
+import poker.player.bots.PlayerAIBase;
 
 /**
  * @author Charles Williams, Matthew Kauffman, Lorenzo Colmenero
@@ -15,25 +16,53 @@ import poker.player.bots.RandomBot;
 
 public class Launcher {
 	public static void main(String[] args) {
+		// prompt user for game setup
+		int playerCount = UserInput.getPlayerCount(Rules.MAX_PLAYERS);
+		int roundCount = 0;
 		
-		HashMap<String, Integer> wins = new HashMap<String, Integer>();
-		wins.put("Bob", 0);
-		wins.put("Sally", 0);
-		wins.put("Alice", 0);
-		wins.put("Mallory", 0);
+		ArrayList<Player> players = new ArrayList<Player>();
+		HashMap<Player, GameResults> results = new HashMap<Player, GameResults>();
+		boolean haveHumanPlayers = false;
 		
-		Player a = new Player(Player.BOT, Player.NORTH, "Sally", new MatthewBot());
-		Player b = new Player(Player.BOT, Player.EAST, "Bob", new RandomBot()); 
-		
-		for (int i = 0; i < 100000; i++) {
-			Game game = new Game(Arrays.asList(a, b));
-			ArrayList<Player> results = game.run();			
-			wins.put(results.get(0).getName(), wins.get(results.get(0).getName()) + 1);
+		for (int i = 1; i <= playerCount; i++) {
+			int type = UserInput.getNextPlayerType(i);
+			String name = UserInput.getNextPlayerName(i);
+			PlayerAIBase ai = null;
+			
+			if (type == Player.BOT) {
+				ai = UserInput.getNextPlayerAI(i);
+			} else {
+				haveHumanPlayers = true;
+			}
+			
+			Player p = new Player(type, i, name, ai);
+			players.add(p);
+			results.put(p, new GameResults(p));
 		}
 		
-		System.out.println("Alice wins: " + wins.get("Alice"));
-		System.out.println("Bob wins: " + wins.get("Bob"));
-		System.out.println("Mallory wins: " + wins.get("Mallory"));
-		System.out.println("Sally wins: " + wins.get("Sally"));
+		if (!haveHumanPlayers) {
+			roundCount = UserInput.getRoundCount();
+		}
+		
+		// run...
+		UserInput.postMessage("Starting %d game%s with %d players!\n", 
+			roundCount, (roundCount > 1 ? "s" :""), playerCount);
+		
+		for (int round = 0; round < roundCount; round++) {
+			Game game = new Game(players);
+			ArrayList<Player> ret = game.run();
+			
+			for (int i = 0; i < ret.size(); i++) {
+				Player next = ret.get(i);
+				results.get(next).processGameResult(i);
+			}
+		}
+		
+		// tabulate and post results
+		List<GameResults> playerResults = results.values().stream()
+				.sorted((a, b) -> b.getScore() - a.getScore())
+				.collect(Collectors.toList());
+		
+		UserInput.postResults(playerResults);
 	}
 }
