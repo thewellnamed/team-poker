@@ -62,7 +62,7 @@ public class Game {
 			player.setCards(cards);
 		}
 		
-		Logger.info(haveHumanPlayers, "First player: %s", players.get(next).getName());
+		postMessage("First player: %s", players.get(next).getName());
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class Game {
 			roundCount++;
 			winningPlayer = round();
 			if (winningPlayer != null) {
-				Logger.info(haveHumanPlayers, "Winner %d: %s", results.size() + 1, winningPlayer.getName());
+				postMessage("Winner %d: %s", results.size() + 1, winningPlayer.getName());
 				results.add(winningPlayer);
 				players.remove(winningPlayer);
 				
@@ -104,7 +104,7 @@ public class Game {
 			}
 		} while (results.size() < numPlayers && (maxRounds < 0 || roundCount < maxRounds));
 		
-		Logger.info("ran for %d rounds", roundCount);
+		postMessage("ran for %d rounds", roundCount);
 		return results;
 	}
 	
@@ -148,7 +148,7 @@ public class Game {
 			do {
 				doneWithPlayer = true;
 				play = nextPlayer.getNextHand(last, playedHands);
-				Logger.info(haveHumanPlayers, "%s played %s", nextPlayer.getName(), play == null ? "pass" : play);
+				postMessage("%s played %s", nextPlayer.getName(), play == null ? "pass" : play);
 				
 				if (play != null) {	
 					int valid = Rules.checkHand(nextPlayer,  play, last, startingCard);
@@ -183,24 +183,18 @@ public class Game {
 			next = (next + 1) % players.size();
 		} while (next != lastSuccess);
 				
-		Logger.info(haveHumanPlayers, "Round winner = %s\n", players.get(lastSuccess).getName());
+		postMessage("Round winner = %s\n", players.get(lastSuccess).getName());
 		return null;
 	}
 	
 	/**
-	 * Re-initialize next turn to the player with lowest card.
+	 * Post user message
 	 */
-	private void setStartingPlayer() {
-		long lowestCard = Rank.ACE.getScore() | Suit.SPADES.getScore();
+	private void postMessage(String format, Object ... args) {
+		Logger.info(format, args);
 		
-		// Deal the cards and find the player who would be first to play based on the lowest card.
-		for (int p = 0; p < players.size(); p++) {
-			
-			Card lowest = players.get(p).getCards().last();
-			if (lowest.getScore() < lowestCard) {
-				next = p;
-				lowestCard = lowest.getScore();
-			}
+		if (haveHumanPlayers) {
+			UserInput.postMessage(format, args);
 		}
 	}
 }

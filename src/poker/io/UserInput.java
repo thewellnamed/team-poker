@@ -11,7 +11,7 @@ import poker.player.Player;
 
 /**
  * @author Charles Williams, Matthew Kauffman, Lorenzo Colmenero
- * Userinputs for the game.
+ * Helper methods to collect user input
  */
 public class UserInput {
 	private static Scanner in = new Scanner(System.in);
@@ -66,5 +66,14 @@ public class UserInput {
 				// wat?
 				break;
 		}
+	}
+	
+	/**
+	 * Post message to user
+	 * @param format Format string
+	 * @param args Args
+	 */
+	public static void postMessage(String format, Object ... args) {
+		System.out.println(String.format(format, args));
 	}
 }
