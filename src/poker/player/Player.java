@@ -29,6 +29,8 @@ public class Player implements Comparable<Player> {
 	public static final int SOUTH = 3;
 	public static final int WEST = 4;
 	
+	// new comment
+	
 	/**
 	 * Constructor for human
 	 */
